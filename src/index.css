@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #FBF9F5;
+    color: #1A1917;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+  }
+
+  code, pre, .font-data {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Canine dichromatic vision simulation filter */
+.dog-vision-filter {
+  filter: url(#canine-vision-filter) contrast(1.05) brightness(0.98);
+}
+
+/* Subtle editorial paper grain & textures */
+.paper-border {
+  border-color: #E6E1D8;
+}
+
+.paper-bg-subtle {
+  background-color: #F4F0E8;
+}
+
+.paper-bg-card {
+  background-color: #FFFFFF;
+}
+
+/* Smooth custom scrollbars for editorial look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F0E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #D5CEBF;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B8B09F;
+}
