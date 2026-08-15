@@ -199,12 +199,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   sensoryAudio.playClick();
                   onStartSniffing();
                 }}
-                className="group inline-flex min-h-12 items-center gap-6 bg-[#1D1C19] px-6 py-3 font-data text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FCFAF5] transition-[background-color,transform] duration-200 hover:-translate-y-[1px] hover:bg-[#43513B] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
+                className="group inline-flex min-h-12 items-center gap-6 bg-[#1D1C19] px-6 py-3 font-data text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FCFAF5] transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[1px] hover:bg-[#43513B] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
               >
                 Start sniffing
                 <ArrowRight
                   aria-hidden="true"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                  className="h-3.5 w-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5"
                 />
               </button>
 
@@ -214,14 +214,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   sensoryAudio.playClick();
                   onOpenCamera();
                 }}
-                className="group relative inline-flex min-h-12 items-center gap-3 px-1 py-3 font-data text-[9px] font-medium uppercase tracking-[0.17em] text-[#4E4A43] transition-colors hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
+                className="group relative inline-flex min-h-12 items-center gap-3 px-1 py-3 font-data text-[9px] font-medium uppercase tracking-[0.17em] text-[#4E4A43] transition-colors duration-300 hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
               >
                 <Camera
                   aria-hidden="true"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-rotate-6"
+                  className="h-3.5 w-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-6"
                 />
                 Use camera
-                <span className="absolute bottom-2 left-1 h-px w-[calc(100%-0.5rem)] origin-left scale-x-100 bg-[#AAA296] transition-transform duration-300 group-hover:scale-x-0" />
+                <span className="absolute bottom-2 left-1 h-px w-[calc(100%-0.5rem)] origin-left scale-x-100 bg-[#AAA296] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-0" />
               </button>
             </motion.div>
           </div>
@@ -263,7 +263,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <img
                   src={SAMPLE_SCENES[0].imageUrl}
                   alt="City Park sample scene"
-                  className="h-full w-full object-cover saturate-[0.94] transition-[transform,filter] duration-[900ms] ease-out group-hover:scale-[1.018] group-hover:saturate-100"
+                  className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.028] group-hover:saturate-100"
                 />
               </div>
 
@@ -282,7 +282,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   delay: 0.72,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#35412F] font-data text-[8px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.24)] transition-transform duration-300 group-hover:scale-110"
+                className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#35412F] font-data text-[8px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.24)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
               >
                 01
               </motion.span>
@@ -302,12 +302,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   delay: 0.78,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#1D1C19] font-data text-[7px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.26)] transition-transform duration-300 group-hover:scale-110"
+                className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#1D1C19] font-data text-[7px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.26)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
               >
                 02
               </motion.span>
 
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-300 group-hover:ring-black/10" />
+              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:ring-black/10" />
             </div>
 
             <div className="flex items-center justify-between border-b border-[#D8D1C5] py-3">
@@ -326,7 +326,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 <ArrowRight
                   aria-hidden="true"
-                  className="h-3 w-3 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                  className="h-3 w-3 -translate-x-1 opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0 group-hover:opacity-100"
                 />
               </div>
             </div>
@@ -371,12 +371,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <img
                     src={scene.imageUrl}
                     alt={cleanTitle(scene.title)}
-                    className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-[850ms] ease-out group-hover:scale-[1.025] group-hover:saturate-100"
+                    className="h-full w-full object-cover saturate-[0.9] transition-[transform,filter] duration-[1350ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035] group-hover:saturate-100"
                   />
 
-                  <div className="absolute inset-0 bg-[#1D1C19]/0 transition-colors duration-300 group-hover:bg-[#1D1C19]/[0.035]" />
+                  <div className="absolute inset-0 bg-[#1D1C19]/0 transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:bg-[#1D1C19]/[0.035]" />
 
-                  <span className="absolute bottom-3 right-3 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full bg-[#F6F3EC] text-[#43513B] opacity-0 shadow-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="absolute bottom-3 right-3 flex h-8 w-8 translate-y-3 items-center justify-center rounded-full bg-[#F6F3EC] text-[#43513B] opacity-0 shadow-sm transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 group-hover:opacity-100">
                     <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                   </span>
                 </div>
@@ -388,7 +388,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
-                      <h3 className="font-editorial text-[1.65rem] font-light leading-none tracking-[-0.015em] text-[#2A2824] transition-colors duration-300 group-hover:text-[#43513B]">
+                      <h3 className="font-editorial text-[1.65rem] font-light leading-none tracking-[-0.015em] text-[#2A2824] transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-[#43513B]">
                         {cleanTitle(scene.title)}
                       </h3>
                     </div>
@@ -406,7 +406,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     Open report
                     <ArrowRight
                       aria-hidden="true"
-                      className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1"
+                      className="h-3 w-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5"
                     />
                   </div>
                 </div>
