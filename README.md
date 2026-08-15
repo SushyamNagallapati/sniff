@@ -8,8 +8,6 @@ Users can upload a photograph or capture a scene with their camera. SNIFF analyz
 
 The experience is designed as an editorial field guide rather than a traditional AI chatbot or dashboard.
 
----
-
 ## Overview
 
 SNIFF explores a simple question:
@@ -27,8 +25,6 @@ For each analyzed scene, SNIFF generates:
 - A safe observational **Sniff Quest**
 
 The application does not claim to detect smells, chemical traces, ultrasonic sound, invisible scent trails, or a dog's thoughts or behavior.
-
----
 
 ## Core Experience
 
@@ -64,8 +60,6 @@ Each discovery returned by Gemini includes normalized image coordinates:
 
 The frontend uses these coordinates to position numbered markers directly over the relevant areas of the photograph.
 
----
-
 ## Google Gemini Integration
 
 SNIFF uses the Google Gemini API for multimodal scene analysis.
@@ -92,8 +86,6 @@ SNIFF uses Gemini for:
 
 API credentials remain server-side and are never intentionally exposed to the browser.
 
----
-
 ## Grounding and Responsible Design
 
 SNIFF is intentionally conservative about what can be inferred from a photograph.
@@ -110,8 +102,6 @@ Categories such as `smell` describe possible sensory relevance of a visible feat
 
 The **Dog View** mode is also presented as a simplified visual approximation inspired by canine dichromatic vision. It is not intended to reproduce an individual dog's complete visual or sensory experience.
 
----
-
 ## Sample Scenes
 
 The application includes several pre-analyzed environments so the interaction can be explored without uploading an image:
@@ -121,8 +111,6 @@ The application includes several pre-analyzed environments so the interaction ca
 - **Home Kitchen**
 
 These experiences are explicitly labeled **PRE-ANALYZED SAMPLE** in the interface and are not presented as live Gemini responses.
-
----
 
 ## Tech Stack
 
@@ -138,7 +126,8 @@ These experiences are explicitly labeled **PRE-ANALYZED SAMPLE** in the interfac
 ### Backend
 
 - Node.js
-- Express
+- Express for local production testing
+- Vercel Functions for deployed API routes
 - Google GenAI SDK
 
 ### AI
@@ -155,37 +144,21 @@ These experiences are explicitly labeled **PRE-ANALYZED SAMPLE** in the interfac
 - FileReader
 - Web Audio API
 
----
-
 ## Project Structure
 
 ```text
 sniff/
+├── api/
+│   ├── health.ts
+│   └── sniff.ts
+│
 ├── src/
 │   ├── components/
-│   │   ├── CameraModal.tsx
-│   │   ├── CanineVisionFilter.tsx
-│   │   ├── DiscoveryDossier.tsx
-│   │   ├── HeroSection.tsx
-│   │   ├── ImageViewport.tsx
-│   │   ├── LoadingState.tsx
-│   │   ├── Navbar.tsx
-│   │   ├── SniffQuestCard.tsx
-│   │   └── UploadZone.tsx
-│   │
 │   ├── data/
-│   │   └── sampleScenes.ts
-│   │
 │   ├── server/
 │   │   └── geminiService.ts
-│   │
 │   ├── types/
-│   │   └── sniff.ts
-│   │
 │   ├── utils/
-│   │   ├── audioSensory.ts
-│   │   └── validateSniff.ts
-│   │
 │   ├── App.tsx
 │   ├── index.css
 │   └── main.tsx
@@ -199,7 +172,14 @@ sniff/
 └── README.md
 ```
 
----
+## Deployment Architecture
+
+SNIFF uses two backend entry points depending on the environment:
+
+- `server.ts` provides the Express server used for local production testing.
+- `api/health.ts` and `api/sniff.ts` are deployed as Vercel Functions.
+
+Both paths reuse the same Gemini analysis logic from `src/server/geminiService.ts`, keeping model configuration and response validation centralized.
 
 ## Running Locally
 
@@ -275,8 +255,6 @@ The API health endpoint is available at:
 http://localhost:3000/api/health
 ```
 
----
-
 ## API Endpoint
 
 ### `POST /api/sniff`
@@ -295,8 +273,6 @@ The server validates the Gemini response before returning it to the frontend.
 
 If Gemini or the provider is unavailable, the application returns a controlled service-level error rather than exposing raw provider responses, credentials, stack traces, or project details.
 
----
-
 ## Supported Image Formats
 
 SNIFF currently accepts:
@@ -313,8 +289,6 @@ Maximum upload size:
 
 Camera captures are resized when necessary before analysis to avoid unnecessarily large payloads.
 
----
-
 ## Design Direction
 
 SNIFF follows an editorial field-guide visual system built around:
@@ -329,8 +303,6 @@ SNIFF follows an editorial field-guide visual system built around:
 - Clear visual hierarchy
 
 The interface intentionally avoids generic AI dashboard patterns, excessive gradients, glassmorphism, and chatbot-style interaction.
-
----
 
 ## Reliability
 
@@ -348,8 +320,6 @@ The application includes safeguards for:
 
 If a newer image is submitted while an earlier request is still running, the older request cannot overwrite the newer result.
 
----
-
 ## Privacy
 
 Uploaded images are sent to the configured Gemini API only for scene analysis.
@@ -358,23 +328,17 @@ SNIFF does not include a database or user-account system and does not intentiona
 
 API keys are configured through server-side environment variables and must not be committed to source control.
 
----
-
 ## Challenge
 
 SNIFF was developed for the **DEV Weekend Challenge: Dog Days Edition**, with Google AI used as the primary prize technology.
 
 The project focuses on making Gemini integral to the interaction rather than adding AI as a secondary chatbot feature.
 
----
-
 ## Status
 
 SNIFF is an experimental project and should not be interpreted as a scientific model of canine perception or behavior.
 
 Live Gemini analysis requires a Google Cloud project with valid Gemini API access and available quota.
-
----
 
 ## Author
 
