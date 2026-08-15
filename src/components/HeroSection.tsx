@@ -1,4 +1,5 @@
 import React from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Camera } from "lucide-react";
 
 import { SAMPLE_SCENES } from "../data/sampleScenes";
@@ -16,6 +17,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onSelectSample,
   onOpenCamera,
 }) => {
+  const shouldReduceMotion = useReducedMotion();
+
   const openSample = (scene: SampleScene) => {
     sensoryAudio.playClick();
     onSelectSample(scene);
@@ -27,38 +30,138 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       .toLowerCase()
       .replace(/\b\w/g, (character) => character.toUpperCase());
 
+  const reveal = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 18,
+    },
+
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
+  const revealTransition = {
+    duration: shouldReduceMotion ? 0 : 0.65,
+
+    ease: [0.22, 1, 0.36, 1] as const,
+  };
+
   return (
     <main className="mx-auto w-full max-w-[1320px] px-5 sm:px-7 lg:px-10">
       {/* HERO */}
       <section className="border-b border-[#D8D1C5] pb-16 pt-10 sm:pt-12 lg:pb-20 lg:pt-14">
-        <div className="mb-6 flex items-center justify-between border-b border-[#D8D1C5] pb-3">
+        {/* Editorial metadata */}
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.55,
+            delay: 0.02,
+          }}
+          className="mb-6 flex items-center justify-between border-b border-[#D8D1C5] pb-3"
+        >
           <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B] sm:text-[9px]">
             CANINE FIELD STUDY
           </span>
 
           <span className="hidden font-data text-[8px] uppercase tracking-[0.18em] text-[#918B81] sm:block">
-            MULTIMODAL OBSERVATION
+            VISUAL FIELD ANALYSIS
           </span>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 gap-11 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16 xl:gap-20">
           {/* HERO COPY */}
           <div className="flex flex-col">
-            <h1 className="max-w-[690px] font-editorial text-[clamp(4rem,6.4vw,6.9rem)] font-light leading-[0.87] tracking-[-0.055em] text-[#1D1C19]">
-              <span className="block">The world is</span>
+            <h1 className="max-w-[680px] font-editorial text-[clamp(3.8rem,5.8vw,6.25rem)] font-light leading-[0.9] tracking-[-0.042em] text-[#1D1C19]">
+              <span className="block overflow-hidden pb-[0.04em]">
+                <motion.span
+                  className="block"
+                  variants={reveal}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{
+                    ...revealTransition,
+                    delay: 0.08,
+                  }}
+                >
+                  The world is
+                </motion.span>
+              </span>
 
-              <span className="block">different</span>
+              <span className="block overflow-hidden pb-[0.04em]">
+                <motion.span
+                  className="block"
+                  variants={reveal}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{
+                    ...revealTransition,
+                    delay: 0.16,
+                  }}
+                >
+                  different
+                </motion.span>
+              </span>
 
-              <span className="block italic text-[#43513B]">down here.</span>
+              <span className="block overflow-hidden pb-[0.06em]">
+                <motion.span
+                  className="block italic text-[#43513B]"
+                  variants={reveal}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{
+                    ...revealTransition,
+                    delay: 0.24,
+                  }}
+                >
+                  down here.
+                </motion.span>
+              </span>
             </h1>
 
-            <p className="mt-8 max-w-[585px] font-sans text-[15px] leading-[1.8] text-[#625D55] sm:text-[16px]">
+            {/* Intro */}
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion ? 0 : 12,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                ...revealTransition,
+                delay: 0.34,
+              }}
+              className="mt-8 max-w-[560px] font-sans text-[15px] leading-[1.75] text-[#625D55] sm:text-[16px]"
+            >
               See an everyday environment from a lower, dog-oriented
-              perspective. SNIFF examines visible details that may otherwise
-              pass unnoticed.
-            </p>
+              perspective. SNIFF surfaces visible details, boundaries, textures,
+              movement, and spatial cues that might otherwise pass unnoticed.
+            </motion.p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#8C867C]">
+            {/* Grounding principles */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion ? 0 : 8,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                ...revealTransition,
+                delay: 0.42,
+              }}
+              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#8C867C]"
+            >
               <span>Visible evidence only</span>
 
               <span aria-hidden="true" className="text-[#C1BAAE]">
@@ -72,9 +175,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </span>
 
               <span>No behavioral claims</span>
-            </div>
+            </motion.div>
 
-            <div className="mt-9 flex flex-wrap items-center gap-6">
+            {/* Actions */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion ? 0 : 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                ...revealTransition,
+                delay: 0.5,
+              }}
+              className="mt-9 flex flex-wrap items-center gap-6"
+            >
               <button
                 type="button"
                 onClick={() => {
@@ -105,18 +223,43 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 Use camera
                 <span className="absolute bottom-2 left-1 h-px w-[calc(100%-0.5rem)] origin-left scale-x-100 bg-[#AAA296] transition-transform duration-300 group-hover:scale-x-0" />
               </button>
-            </div>
+            </motion.div>
           </div>
 
           {/* FEATURED SAMPLE */}
-          <button
+          <motion.button
             type="button"
             onClick={() => openSample(SAMPLE_SCENES[0])}
             aria-label="Open City Park pre-analyzed sample"
+            initial={{
+              opacity: 0,
+              scale: shouldReduceMotion ? 1 : 0.985,
+              y: shouldReduceMotion ? 0 : 14,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.8,
+              delay: 0.18,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4"
           >
+            <div className="mb-2 flex items-center justify-between">
+              <span className="font-data text-[8px] uppercase tracking-[0.18em] text-[#43513B]">
+                PRE-ANALYZED SAMPLE
+              </span>
+
+              <span className="font-data text-[7px] uppercase tracking-[0.15em] text-[#918B81]">
+                FIELD SPECIMEN
+              </span>
+            </div>
+
             <div className="relative overflow-hidden bg-[#E7E1D6]">
-              <div className="aspect-[5/4]">
+              <div className="aspect-[5/4] overflow-hidden">
                 <img
                   src={SAMPLE_SCENES[0].imageUrl}
                   alt="City Park sample scene"
@@ -124,17 +267,45 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 />
               </div>
 
-              <span className="absolute left-0 top-0 bg-[#F6F3EC] px-3 py-2 font-data text-[8px] uppercase tracking-[0.18em] text-[#43513B]">
-                PRE-ANALYZED SAMPLE
-              </span>
-
-              <span className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5]/90 bg-[#43513B] font-data text-[8px] font-medium text-white shadow-md transition-transform duration-300 group-hover:scale-110">
+              {/* Marker 01 */}
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  scale: shouldReduceMotion ? 1 : 0.65,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.4,
+                  delay: 0.72,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#35412F] font-data text-[8px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.24)] transition-transform duration-300 group-hover:scale-110"
+              >
                 01
-              </span>
+              </motion.span>
 
-              <span className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5]/90 bg-[#1D1C19]/80 font-data text-[7px] text-white shadow-md transition-transform duration-300 group-hover:scale-110">
+              {/* Marker 02 */}
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  scale: shouldReduceMotion ? 1 : 0.65,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.4,
+                  delay: 0.78,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#1D1C19] font-data text-[7px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.26)] transition-transform duration-300 group-hover:scale-110"
+              >
                 02
-              </span>
+              </motion.span>
 
               <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-300 group-hover:ring-black/10" />
             </div>
@@ -159,7 +330,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 />
               </div>
             </div>
-          </button>
+          </motion.button>
         </div>
       </section>
 

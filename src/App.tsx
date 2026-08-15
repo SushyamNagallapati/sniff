@@ -367,7 +367,7 @@ export default function App() {
         {sniffResult && currentImage && !isAnalyzing && !hasError && (
           <section
             ref={analysisContainerRef}
-            className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 sm:py-12"
+            className="scroll-mt-[74px] mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 sm:py-12"
             aria-labelledby="field-report-title"
           >
             {/* Report index */}
