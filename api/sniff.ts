@@ -1,6 +1,15 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { GoogleGenAI } from "@google/genai";
+
+type ApiRequest = IncomingMessage & {
+  body?: Record<string, unknown>;
+};
+
+type ApiResponse = ServerResponse & {
+  status(statusCode: number): ApiResponse;
+  json(body: unknown): ApiResponse;
+};
 
 const MODEL = "gemini-3.6-flash";
 
@@ -652,7 +661,7 @@ async function analyzeScene(
   return validated;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
 
