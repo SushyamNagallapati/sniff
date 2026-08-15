@@ -87,13 +87,19 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
         {/* Title */}
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="font-data text-[10px] font-semibold text-[#43513B]">
+            <span className="shrink-0 font-data text-[10px] font-semibold text-[#43513B]">
               {String(selectedIndex + 1).padStart(2, "0")} /
             </span>
 
+            {/*
+             * Discovery labels come from Gemini and are
+             * unbounded. line-clamp keeps an unusually
+             * long one from running past two lines and
+             * crowding the rest of the card.
+             */}
             <h2
               id="selected-discovery-title"
-              className="font-editorial text-2xl font-light uppercase tracking-[-0.025em] text-[#1D1C19] sm:text-3xl"
+              className="line-clamp-2 min-w-0 flex-1 font-editorial text-2xl font-light uppercase tracking-[-0.025em] text-[#1D1C19] sm:text-3xl"
             >
               {current.label}
             </h2>

@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="public/sniff-og.png"
+    src="public/sniff-og.jpg"
     alt="SNIFF, a Gemini-powered field guide exploring everyday environments from a dog-oriented perspective"
     width="100%"
   />
@@ -222,7 +222,6 @@ Then configure:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key
-APP_URL=http://localhost:3000
 ```
 
 Never commit your real `.env` file or API key.

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { motion, useReducedMotion } from "motion/react";
 
+import { DURATION, EASE } from "../styles/motion";
 import { PhotoFrame } from "./PhotoFrame";
 
 const LOADING_STAGES = [
@@ -12,6 +13,24 @@ const LOADING_STAGES = [
 
 const STAGE_DURATION_MS = 1800;
 
+/**
+ * Analysis can take anywhere from a few seconds to the
+ * full 45s timeout in App.tsx, but the 3 stages above
+ * only script the first ~5.4s. Without this, a slow real
+ * request visibly "finishes" its script and then sits on
+ * static text for up to 40 more seconds — the pulsing bar
+ * still moves, but a reader reads the frozen words as
+ * stuck. These rotate the final stage's message instead
+ * of holding it still.
+ */
+const FINAL_STAGE_MESSAGES = [
+  "Building the field report...",
+  "Cross-checking the discoveries...",
+  "Still looking closely...",
+];
+
+const FINAL_MESSAGE_ROTATION_MS = 4000;
+
 interface LoadingStateProps {
   imageUrl?: string | null;
 }
@@ -19,7 +38,11 @@ interface LoadingStateProps {
 export const LoadingState: React.FC<LoadingStateProps> = ({ imageUrl }) => {
   const [stageIndex, setStageIndex] = useState(0);
 
+  const [finalMessageIndex, setFinalMessageIndex] = useState(0);
+
   const shouldReduceMotion = useReducedMotion();
+
+  const isFinalStage = stageIndex === LOADING_STAGES.length - 1;
 
   useEffect(() => {
     const stageInterval = setInterval(() => {
@@ -33,7 +56,23 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ imageUrl }) => {
     };
   }, []);
 
-  const isFinalStage = stageIndex === LOADING_STAGES.length - 1;
+  useEffect(() => {
+    if (!isFinalStage) {
+      return;
+    }
+
+    const rotation = setInterval(() => {
+      setFinalMessageIndex((previous) => previous + 1);
+    }, FINAL_MESSAGE_ROTATION_MS);
+
+    return () => {
+      clearInterval(rotation);
+    };
+  }, [isFinalStage]);
+
+  const stageText = isFinalStage
+    ? FINAL_STAGE_MESSAGES[finalMessageIndex % FINAL_STAGE_MESSAGES.length]
+    : LOADING_STAGES[stageIndex];
 
   return (
     <div className="space-y-8">
@@ -79,9 +118,28 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ imageUrl }) => {
               STAGE 0{stageIndex + 1} OF 03
             </span>
 
-            <h2 className="mt-6 font-editorial text-3xl font-light text-[#1D1C19] transition-opacity duration-base">
-              {LOADING_STAGES[stageIndex]}
-            </h2>
+            {/*
+             * Keyed on the text itself: whichever value
+             * changes it — the stage advancing, or a final
+             * -stage phrase rotating — remounts and
+             * crossfades, instead of a class that implied
+             * a transition nothing ever triggered.
+             */}
+            <motion.h2
+              key={stageText}
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion ? 0 : 6,
+              }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : DURATION.fast,
+                ease: EASE,
+              }}
+              className="mt-6 font-editorial text-3xl font-light text-[#1D1C19]"
+            >
+              {stageText}
+            </motion.h2>
           </div>
 
           <p className="mt-3 font-sans text-xs text-[#716C63]">

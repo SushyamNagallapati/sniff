@@ -29,6 +29,18 @@ interface PhotoFrameProps {
 
   /** Absolutely positioned overlay, in the photograph's own coordinate space. */
   children?: React.ReactNode;
+
+  /**
+   * Applied to the stage — the bordered box the photograph
+   * sits in, above the scaled photo itself. A caller that
+   * replaces the system cursor (ImageViewport's custom
+   * cursor) sets `cursor-none` here; nothing else needs it.
+   */
+  stageClassName?: string;
+
+  onStageMouseMove?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onStageMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onStageMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 /**
@@ -53,6 +65,10 @@ export const PhotoFrame: React.FC<PhotoFrameProps> = ({
   scale = 1,
   transformOrigin = "50% 50%",
   children,
+  stageClassName = "",
+  onStageMouseMove,
+  onStageMouseEnter,
+  onStageMouseLeave,
 }) => {
   const shouldReduceMotion = useReducedMotion();
 
@@ -71,7 +87,12 @@ export const PhotoFrame: React.FC<PhotoFrameProps> = ({
         {header}
       </div>
 
-      <div className="relative flex w-full justify-center overflow-hidden bg-[#1D1C19]">
+      <div
+        className={`relative flex w-full justify-center overflow-hidden bg-[#1D1C19] ${stageClassName}`}
+        onMouseMove={onStageMouseMove}
+        onMouseEnter={onStageMouseEnter}
+        onMouseLeave={onStageMouseLeave}
+      >
         <motion.div
           animate={{ scale }}
           transition={{

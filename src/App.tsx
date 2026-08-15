@@ -207,6 +207,8 @@ export default function App() {
         return;
       }
 
+      sensoryAudio.playReportReady();
+
       setSniffResult(validatedResult);
 
       setSelectedDiscoveryIndex(0);

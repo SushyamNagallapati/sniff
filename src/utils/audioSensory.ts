@@ -45,12 +45,15 @@ class SensoryAudioEngine {
     duration,
     gainValue,
     type = "sine",
+    startAt = 0,
   }: {
     startFrequency: number;
     endFrequency: number;
     duration: number;
     gainValue: number;
     type?: OscillatorType;
+    /** Seconds from now to begin this note. Lets a phrase schedule several notes in one call. */
+    startAt?: number;
   }) {
     if (!this.enabled) {
       return;
@@ -67,26 +70,29 @@ class SensoryAudioEngine {
 
       const gain = context.createGain();
 
-      const now = context.currentTime;
+      const start = context.currentTime + Math.max(0, startAt);
 
       oscillator.type = type;
 
-      oscillator.frequency.setValueAtTime(Math.max(1, startFrequency), now);
+      oscillator.frequency.setValueAtTime(
+        Math.max(1, startFrequency),
+        start,
+      );
 
       oscillator.frequency.exponentialRampToValueAtTime(
         Math.max(1, endFrequency),
-        now + duration,
+        start + duration,
       );
 
-      gain.gain.setValueAtTime(Math.max(0.0001, gainValue), now);
+      gain.gain.setValueAtTime(Math.max(0.0001, gainValue), start);
 
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
 
       oscillator.connect(gain);
       gain.connect(context.destination);
 
-      oscillator.start(now);
-      oscillator.stop(now + duration);
+      oscillator.start(start);
+      oscillator.stop(start + duration);
     } catch {
       /**
        * Audio feedback is optional.
@@ -124,6 +130,32 @@ class SensoryAudioEngine {
       duration: 0.15,
       gainValue: 0.028,
       type: "triangle",
+    });
+  }
+
+  /**
+   * Two-note rising chime for the moment a field report
+   * finishes — the one point in the flow that was
+   * previously silent despite being the payoff of the
+   * whole wait. A fifth apart (D5 -> A5) so it reads as
+   * "resolved" rather than another neutral blip.
+   */
+  public playReportReady() {
+    this.playTone({
+      startFrequency: 587,
+      endFrequency: 622,
+      duration: 0.16,
+      gainValue: 0.03,
+      type: "sine",
+    });
+
+    this.playTone({
+      startFrequency: 880,
+      endFrequency: 932,
+      duration: 0.26,
+      gainValue: 0.032,
+      type: "sine",
+      startAt: 0.1,
     });
   }
 

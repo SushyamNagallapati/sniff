@@ -153,11 +153,11 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             openFilePicker();
           }
         }}
-        className={`group relative border border-dashed p-8 text-center transition-colors duration-fast sm:p-12 ${
+        className={`group relative border border-dashed p-8 text-center transition-[background-color,border-color,transform] duration-fast ease-brand sm:p-12 ${
           isAnalyzing
             ? "cursor-wait border-rule bg-paper opacity-70"
             : isDragging
-              ? "cursor-pointer border-forest bg-surface"
+              ? "scale-[1.008] cursor-pointer border-forest bg-surface"
               : "cursor-pointer border-rule bg-paper hover:border-forest hover:bg-surface"
         }`}
       >
