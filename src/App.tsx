@@ -524,7 +524,7 @@ export default function App() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 font-data text-xs text-[#7A7468] sm:flex-row sm:px-6">
           <div className="flex items-center gap-2">
             <span className="font-editorial text-base text-[#191816]">
-              SNIFF:
+              SNIFF
             </span>
 
             <span>The world is different down here.</span>
