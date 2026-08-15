@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+
+import { Info } from "lucide-react";
+
 import type { Discovery } from "../types/sniff";
 import { sensoryAudio } from "../utils/audioSensory";
-import { Info } from "lucide-react";
 
 interface ImageViewportProps {
   imageUrl: string;
@@ -22,12 +26,15 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
 }) => {
   const [showInfo, setShowInfo] = useState(false);
 
+  const shouldReduceMotion = useReducedMotion();
+
   const handleToggle = (toDogView: boolean) => {
     if (toDogView === isDogView) {
       return;
     }
 
     sensoryAudio.playModeSwitch(toDogView);
+
     onToggleView(toDogView);
   };
 
@@ -35,7 +42,7 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
     <div className="relative flex flex-col border border-[#D5CEBF] bg-[#1A1917]">
       {/* Perspective controls */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#33302B] bg-[#191816] px-4 py-2 text-white">
-        <span className="font-data text-xs uppercase tracking-wider text-[#A59F94]">
+        <span className="font-data text-[9px] uppercase tracking-[0.17em] text-[#A59F94]">
           PERSPECTIVE
         </span>
 
@@ -49,10 +56,10 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
               type="button"
               onClick={() => handleToggle(false)}
               aria-pressed={!isDogView}
-              className={`px-3 py-1 font-data text-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FBF9F5] ${
+              className={`px-3 py-1 font-data text-[9px] uppercase tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FCFAF5] ${
                 !isDogView
-                  ? "bg-[#33302B] text-[#FBF9F5]"
-                  : "text-[#8C867A] hover:text-[#FBF9F5]"
+                  ? "bg-[#33302B] text-[#FCFAF5]"
+                  : "text-[#8C867A] hover:text-[#FCFAF5]"
               }`}
             >
               ORIGINAL
@@ -66,16 +73,17 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
               type="button"
               onClick={() => handleToggle(true)}
               aria-pressed={isDogView}
-              className={`px-3 py-1 font-data text-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FBF9F5] ${
+              className={`px-3 py-1 font-data text-[9px] uppercase tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FCFAF5] ${
                 isDogView
-                  ? "bg-[#4A5839] text-[#FBF9F5]"
-                  : "text-[#8C867A] hover:text-[#FBF9F5]"
+                  ? "bg-[#43513B] text-[#FCFAF5]"
+                  : "text-[#8C867A] hover:text-[#FCFAF5]"
               }`}
             >
               DOG VIEW
             </button>
           </div>
 
+          {/* Dog View info */}
           <div
             className="relative"
             onMouseEnter={() => setShowInfo(true)}
@@ -86,29 +94,53 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
               onClick={() => setShowInfo((current) => !current)}
               aria-label="About Dog View"
               aria-expanded={showInfo}
-              className="flex h-6 w-6 items-center justify-center rounded-full text-[#8C867A] transition hover:text-[#FBF9F5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FBF9F5]"
+              className="flex h-6 w-6 items-center justify-center rounded-full text-[#8C867A] transition-colors hover:text-[#FCFAF5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FCFAF5]"
             >
               <Info aria-hidden="true" className="h-3.5 w-3.5" />
             </button>
 
-            {showInfo && (
-              <div
-                role="tooltip"
-                className="absolute right-0 top-full z-30 mt-2 w-64 border border-[#33302B] bg-[#191816] p-3 font-sans text-xs leading-relaxed text-[#D5CEBF] shadow-lg"
-              >
-                A simplified visual approximation. SNIFF does not reproduce a
-                dog&apos;s full sensory experience.
-              </div>
-            )}
+            <AnimatePresence>
+              {showInfo && (
+                <motion.div
+                  role="tooltip"
+                  initial={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : 4,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : 2,
+                  }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.18,
+                  }}
+                  className="absolute right-0 top-full z-30 mt-2 w-64 border border-[#38352F] bg-[#191816] p-3 font-sans text-xs leading-relaxed text-[#D5CEBF] shadow-[0_12px_30px_rgba(0,0,0,0.22)]"
+                >
+                  A simplified visual approximation. SNIFF does not reproduce a
+                  dog&apos;s full sensory experience.
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
 
       {/* Photograph */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#1A1917] sm:aspect-[16/10]">
-        <div
-          className={`relative h-full w-full transition-transform duration-500 ease-out ${
-            isDogView ? "dog-vision-filter scale-[1.02]" : "scale-100"
+        <motion.div
+          animate={{
+            scale: isDogView ? 1.02 : 1,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.45,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className={`relative h-full w-full ${
+            isDogView ? "dog-vision-filter" : ""
           }`}
           style={{
             transformOrigin: isDogView ? "50% 85%" : "50% 50%",
@@ -119,36 +151,92 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
             alt="Scene being analyzed by SNIFF"
             className="h-full w-full object-cover"
           />
-        </div>
+        </motion.div>
 
         {/* Discovery markers */}
         {discoveries.map((discovery, index) => {
           const posX = discovery.location.x * 100;
+
           const posY = discovery.location.y * 100;
+
           const isSelected = selectedIndex === index;
 
           return (
-            <button
+            <motion.button
               key={`${discovery.label}-${index}`}
               type="button"
               onClick={() => {
                 sensoryAudio.playDiscoveryPing(discovery.interestScore);
+
                 onSelectDiscovery(index);
               }}
               aria-label={`Discovery ${index + 1}: ${discovery.label}`}
               aria-pressed={isSelected}
+              initial={{
+                opacity: 0,
+                scale: shouldReduceMotion ? 1 : 0.55,
+              }}
+              animate={{
+                opacity: 1,
+                scale: isSelected ? 1.1 : 1,
+              }}
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      scale: isSelected ? 1.14 : 1.08,
+                    }
+              }
+              whileTap={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      scale: 0.96,
+                    }
+              }
+              transition={{
+                opacity: {
+                  duration: shouldReduceMotion ? 0 : 0.25,
+                  delay: shouldReduceMotion ? 0 : index * 0.06,
+                },
+
+                scale: {
+                  duration: shouldReduceMotion ? 0 : 0.34,
+                  delay: shouldReduceMotion ? 0 : index * 0.06,
+                  ease: [0.22, 1, 0.36, 1],
+                },
+              }}
               style={{
                 top: `${posY}%`,
                 left: `${posX}%`,
               }}
-              className={`absolute z-20 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border font-data text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#191816] ${
+              className={`absolute z-20 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border font-data text-[10px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#191816] ${
                 isSelected
-                  ? "scale-110 border-white bg-[#4A5839] text-white shadow-sm"
-                  : "border-[#D5CEBF] bg-[#FBF9F5] text-[#191816] hover:border-[#191816] hover:bg-white"
+                  ? "border-white bg-[#43513B] text-white shadow-[0_4px_16px_rgba(0,0,0,0.32)]"
+                  : "border-white/85 bg-[#EEE9DF]/95 text-[#1D1C19] shadow-[0_3px_12px_rgba(0,0,0,0.2)]"
               }`}
             >
               {String(index + 1).padStart(2, "0")}
-            </button>
+
+              {isSelected && (
+                <motion.span
+                  aria-hidden="true"
+                  initial={{
+                    opacity: 0,
+                    scale: 0.75,
+                  }}
+                  animate={{
+                    opacity: [0, 0.28, 0],
+                    scale: [0.8, 1.45, 1.75],
+                  }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.62,
+                    ease: "easeOut",
+                  }}
+                  className="pointer-events-none absolute inset-0 rounded-full border border-white/70"
+                />
+              )}
+            </motion.button>
           );
         })}
       </div>

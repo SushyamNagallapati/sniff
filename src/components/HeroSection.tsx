@@ -79,7 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* HERO COPY */}
           <div className="flex flex-col">
             <h1 className="max-w-[680px] font-editorial text-[clamp(3.8rem,5.8vw,6.25rem)] font-light leading-[0.9] tracking-[-0.042em] text-[#1D1C19]">
-              <span className="block overflow-hidden pb-[0.04em]">
+              <span className="block pb-[0.04em]">
                 <motion.span
                   className="block"
                   variants={reveal}
@@ -94,7 +94,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </motion.span>
               </span>
 
-              <span className="block overflow-hidden pb-[0.04em]">
+              <span className="block pb-[0.04em]">
                 <motion.span
                   className="block"
                   variants={reveal}
@@ -139,7 +139,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 ...revealTransition,
                 delay: 0.34,
               }}
-              className="mt-8 max-w-[560px] font-sans text-[15px] leading-[1.75] text-[#625D55] sm:text-[16px]"
+              className="mt-8 max-w-[520px] font-sans text-[15px] leading-[1.75] text-[#625D55] sm:text-[16px]"
             >
               See an everyday environment from a lower, dog-oriented
               perspective. SNIFF surfaces visible details, boundaries, textures,

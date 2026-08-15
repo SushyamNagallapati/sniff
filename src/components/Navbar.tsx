@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+
 import { Volume2, VolumeX } from "lucide-react";
 
 import { sensoryAudio } from "../utils/audioSensory";
@@ -18,9 +21,39 @@ export const Navbar: React.FC<NavbarProps> = ({
   soundEnabled,
   onToggleSound,
 }) => {
+  const shouldReduceMotion = useReducedMotion();
+
+  const [showSoundHint, setShowSoundHint] = useState(false);
+
+  useEffect(() => {
+    const key = "sniff-sound-hint-seen";
+
+    const alreadySeen = sessionStorage.getItem(key);
+
+    if (alreadySeen) {
+      return;
+    }
+
+    setShowSoundHint(true);
+
+    sessionStorage.setItem(key, "true");
+
+    const timeout = window.setTimeout(() => {
+      setShowSoundHint(false);
+    }, 2200);
+
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  const handleSoundToggle = () => {
+    setShowSoundHint(false);
+    onToggleSound();
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-[#D8D1C5] bg-[#F6F3EC]/92 backdrop-blur-xl">
       <div className="mx-auto flex h-[58px] max-w-[1320px] items-center justify-between px-5 sm:px-7 lg:px-10">
+        {/* Brand */}
         <div className="flex items-center gap-5">
           <button
             type="button"
@@ -46,6 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
 
+        {/* Controls */}
         <div className="flex items-center gap-4">
           {hasResult && (
             <button
@@ -61,21 +95,51 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={onToggleSound}
-            aria-label={
-              soundEnabled ? "Mute interface sounds" : "Enable interface sounds"
-            }
-            aria-pressed={soundEnabled}
-            className="group flex h-8 w-8 items-center justify-center rounded-full text-[#716C63] transition-[background-color,color,transform] duration-200 hover:bg-[#EAE5DA] hover:text-[#43513B] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
-          >
-            {soundEnabled ? (
-              <Volume2 aria-hidden="true" className="h-3.5 w-3.5" />
-            ) : (
-              <VolumeX aria-hidden="true" className="h-3.5 w-3.5" />
-            )}
-          </button>
+          {/* Sound */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={handleSoundToggle}
+              aria-label={
+                soundEnabled
+                  ? "Mute interface sounds"
+                  : "Enable interface sounds"
+              }
+              aria-pressed={soundEnabled}
+              className="group flex h-8 w-8 items-center justify-center rounded-full text-[#716C63] transition-[background-color,color,transform] duration-200 hover:bg-[#EAE5DA] hover:text-[#43513B] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
+            >
+              {soundEnabled ? (
+                <Volume2 aria-hidden="true" className="h-3.5 w-3.5" />
+              ) : (
+                <VolumeX aria-hidden="true" className="h-3.5 w-3.5" />
+              )}
+            </button>
+
+            <AnimatePresence>
+              {showSoundHint && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : -4,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : -2,
+                  }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.2,
+                  }}
+                  className="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap border border-[#D8D1C5] bg-[#FCFAF5] px-2.5 py-1.5 font-data text-[7px] uppercase tracking-[0.16em] text-[#43513B] shadow-sm"
+                >
+                  Sound on
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </header>
