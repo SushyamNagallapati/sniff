@@ -87,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="hidden h-4 w-px bg-[#D8D1C5] sm:block"
           />
 
-          <span className="hidden font-data text-[8px] uppercase tracking-[0.19em] text-[#716C63] sm:block">
+          <span className="hidden font-data text-[9px] uppercase tracking-[0.19em] text-[#716C63] sm:block">
             CANINE FIELD STUDY
           </span>
         </div>
@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   transition={{
                     duration: shouldReduceMotion ? 0 : DURATION.fast,
                   }}
-                  className="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap border border-[#D8D1C5] bg-[#FCFAF5] px-2.5 py-1.5 font-data text-[7px] uppercase tracking-[0.16em] text-[#43513B] shadow-sm"
+                  className="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap border border-[#D8D1C5] bg-[#FCFAF5] px-2.5 py-1.5 font-data text-[9px] uppercase tracking-[0.16em] text-[#43513B] shadow-sm"
                 >
                   {soundEnabled ? "Sound on" : "Sound off"}
                 </motion.div>

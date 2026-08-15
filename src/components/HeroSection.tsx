@@ -86,11 +86,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           }}
           className="mb-6 flex items-center justify-between border-b border-[#D8D1C5] pb-3"
         >
-          <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B] sm:text-[9px]">
+          <span className="font-data text-[9px] uppercase tracking-[0.2em] text-[#43513B]">
             CANINE FIELD STUDY
           </span>
 
-          <span className="hidden font-data text-[8px] uppercase tracking-[0.18em] text-faint sm:block">
+          <span className="hidden font-data text-[9px] uppercase tracking-[0.18em] text-faint sm:block">
             VISUAL FIELD ANALYSIS
           </span>
         </motion.div>
@@ -99,11 +99,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* HERO COPY */}
           <div className="flex flex-col">
             {/*
-             * The floor is itself viewport-relative below
-             * ~358px, where a flat 3.8rem makes "The world
-             * is" wider than the line box. Above that the
+             * Size: the floor is itself viewport-relative
+             * below ~358px, where a flat 3.8rem makes "The
+             * world is" wider than the line box. Above that
              * min() resolves to 3.8rem and the headline is
              * unchanged at every size that was already fine.
+             *
+             * Optical alignment: every box in this column
+             * starts at the same x, but the ink does not.
+             * Newsreader's lowercase d carries a much larger
+             * left side bearing than T or the italic d.
+             * Measured against the eyebrow rule and the body
+             * copy (both ~0.76px of bearing), "different" sat
+             * 1.75px right and "down here." 0.76px left, so
+             * each carries a nudge below.
+             *
+             * The nudges are in em and hold at every size the
+             * clamp produces, but they are specific to these
+             * glyphs — re-measure if the copy changes.
              */}
             <h1 className="max-w-[680px] font-editorial text-[clamp(min(3.8rem,17vw),5.8vw,6.25rem)] font-light leading-[0.9] tracking-[-0.042em] text-[#1D1C19]">
               <span className="block pb-[0.04em]">
@@ -123,7 +136,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
               <span className="block pb-[0.04em]">
                 <motion.span
-                  className="block"
+                  className="block -ml-[0.021em]"
                   variants={reveal}
                   initial="hidden"
                   animate="visible"
@@ -138,7 +151,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
               <span className="block overflow-hidden pb-[0.06em]">
                 <motion.span
-                  className="block italic text-[#43513B]"
+                  className="ml-[0.009em] block italic text-[#43513B]"
                   variants={reveal}
                   initial="hidden"
                   animate="visible"
@@ -187,7 +200,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 ...revealTransition,
                 delay: 0.42,
               }}
-              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-faint"
+              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[9px] uppercase tracking-[0.15em] text-faint"
             >
               <span>Visible evidence only</span>
 
@@ -280,11 +293,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
           >
             <div className="mb-2 flex items-center justify-between">
-              <span className="font-data text-[8px] uppercase tracking-[0.18em] text-[#43513B]">
+              <span className="font-data text-[9px] uppercase tracking-[0.18em] text-[#43513B]">
                 PRE-ANALYZED SAMPLE
               </span>
 
-              <span className="font-data text-[7px] uppercase tracking-[0.15em] text-faint">
+              <span className="font-data text-[9px] uppercase tracking-[0.15em] text-faint">
                 FIELD SPECIMEN
               </span>
             </div>
@@ -333,7 +346,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                    * dark trunks alike, and the card is one
                    * click from the report it previews.
                    */
-                  className="absolute flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/85 bg-[#F2EEE6]/95 font-data text-[7px] font-semibold text-[#1D1C19] shadow-[0_3px_12px_rgba(0,0,0,0.2)] transition-transform duration-slow ease-brand group-hover:scale-110"
+                  className="absolute flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/85 bg-[#F2EEE6]/95 font-data text-[9px] font-semibold text-[#1D1C19] shadow-[0_3px_12px_rgba(0,0,0,0.2)] transition-transform duration-slow ease-brand group-hover:scale-110"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </motion.span>
@@ -344,16 +357,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             <div className="flex items-center justify-between border-b border-[#D8D1C5] py-3">
               <div className="flex items-center gap-3">
-                <span className="font-data text-[8px] text-[#43513B]">
+                <span className="font-data text-[9px] text-[#43513B]">
                   FIG. 01
                 </span>
 
-                <span className="font-data text-[8px] uppercase tracking-[0.15em] text-[#716C63]">
+                <span className="font-data text-[9px] uppercase tracking-[0.15em] text-[#716C63]">
                   {featuredTitle}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 font-data text-[7px] uppercase tracking-[0.14em] text-faint">
+              <div className="flex items-center gap-2 font-data text-[9px] uppercase tracking-[0.14em] text-faint">
                 <span>
                   {featuredDiscoveries.length}{" "}
                   {featuredDiscoveries.length === 1
@@ -383,7 +396,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       >
         <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
-            <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B]">
+            <span className="font-data text-[9px] uppercase tracking-[0.2em] text-[#43513B]">
               FIELD INDEX / {String(SAMPLE_SCENES.length).padStart(2, "0")}{" "}
               {SAMPLE_SCENES.length === 1 ? "SCENE" : "SCENES"}
             </span>
@@ -427,7 +440,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="mt-3 border-t border-[#C1BAAE] pt-3">
                   <div className="flex items-baseline justify-between gap-3">
                     <div className="flex items-baseline gap-3">
-                      <span className="font-data text-[8px] text-[#43513B]">
+                      <span className="font-data text-[9px] text-[#43513B]">
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
@@ -436,16 +449,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       </h3>
                     </div>
 
-                    <span className="font-data text-[7px] uppercase tracking-[0.15em] text-faint">
+                    <span className="font-data text-[9px] uppercase tracking-[0.15em] text-faint">
                       SAMPLE
                     </span>
                   </div>
 
-                  <p className="mt-3 min-h-[58px] font-sans text-[11px] leading-[1.65] text-[#716C63]">
+                  <p className="mt-3 min-h-[58px] font-sans text-[10px] leading-[1.65] text-[#716C63]">
                     {scene.description}
                   </p>
 
-                  <div className="mt-3 inline-flex items-center gap-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#43513B]">
+                  <div className="mt-3 inline-flex items-center gap-2 font-data text-[9px] uppercase tracking-[0.15em] text-[#43513B]">
                     Open report
                     <ArrowRight
                       aria-hidden="true"

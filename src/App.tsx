@@ -404,7 +404,7 @@ export default function App() {
                 </span>
 
                 {isSampleScene && (
-                  <span className="border border-[#D8D1C5] bg-[#FCFAF5]/70 px-2 py-0.5 font-data text-[8px] uppercase tracking-[0.14em] text-[#716C63]">
+                  <span className="border border-[#D8D1C5] bg-[#FCFAF5]/70 px-2 py-0.5 font-data text-[9px] uppercase tracking-[0.14em] text-[#716C63]">
                     PRE-ANALYZED SAMPLE
                   </span>
                 )}
@@ -420,7 +420,7 @@ export default function App() {
                 {sniffResult.scene.type}
               </h1>
 
-              <p className="font-sans text-base leading-relaxed text-[#625D55] sm:text-lg">
+              <p className="max-w-[640px] font-sans text-base leading-relaxed text-[#625D55] sm:text-lg">
                 {sniffResult.scene.summary}
               </p>
             </div>
@@ -586,7 +586,7 @@ export default function App() {
               </span>
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[7px] uppercase tracking-[0.15em] text-faint">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[9px] uppercase tracking-[0.15em] text-faint">
               <span>Visible evidence only</span>
 
               <span aria-hidden="true" className="text-[#C1BAAE]">
@@ -603,7 +603,7 @@ export default function App() {
             </div>
           </div>
 
-          <span className="font-data text-[7px] uppercase tracking-[0.16em] text-faint">
+          <span className="font-data text-[9px] uppercase tracking-[0.16em] text-faint">
             Built with Gemini
           </span>
         </div>

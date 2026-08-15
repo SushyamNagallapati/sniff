@@ -72,7 +72,7 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
                 ORIGINAL
               </button>
 
-              <span aria-hidden="true" className="text-[#4D4942]">
+              <span aria-hidden="true" className="text-[9px] text-[#4D4942]">
                 /
               </span>
 

@@ -87,7 +87,7 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
         {/* Title */}
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="font-data text-[11px] font-semibold text-[#43513B]">
+            <span className="font-data text-[10px] font-semibold text-[#43513B]">
               {String(selectedIndex + 1).padStart(2, "0")} /
             </span>
 
@@ -115,7 +115,7 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
               {current.interestScore}
             </span>
 
-            <span className="font-data text-[8px] text-faint">/ 100</span>
+            <span className="font-data text-[9px] text-faint">/ 100</span>
           </div>
         </div>
 

@@ -24,7 +24,12 @@ export const SniffQuestCard: React.FC<SniffQuestCardProps> = ({ quest }) => {
         {quest.title}
       </h3>
 
-      <p className="mt-3 max-w-[68ch] font-sans text-sm leading-[1.75] text-[#625D55] sm:text-[15px]">
+      {/*
+       * Explicit px, not ch: Plus Jakarta's zero glyph
+       * is 0.73em, so max-w-[68ch] resolved to 747px and
+       * held 111 characters. This is ~73.
+       */}
+      <p className="mt-3 max-w-[490px] font-sans text-sm leading-[1.75] text-[#625D55] sm:text-[15px]">
         {quest.description}
       </p>
     </section>
