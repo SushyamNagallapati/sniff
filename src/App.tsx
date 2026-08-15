@@ -408,12 +408,12 @@ export default function App() {
             </div>
 
             {/* Quest */}
-            <div className="pt-2">
+            <div className="pt-1">
               <SniffQuestCard quest={sniffResult.quest} />
             </div>
 
             {/* Report actions */}
-            <div className="flex flex-col justify-between gap-4 border-t border-[#D8D1C5] pt-6 sm:flex-row sm:items-center">
+            <div className="flex flex-col justify-between gap-4 border-t border-[#D8D1C5] pt-5 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => {

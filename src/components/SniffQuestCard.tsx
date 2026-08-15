@@ -8,7 +8,7 @@ interface SniffQuestCardProps {
 export const SniffQuestCard: React.FC<SniffQuestCardProps> = ({ quest }) => {
   return (
     <section
-      className="mt-2 border-y border-[#D8D1C5] bg-[#F2EEE6]/45 px-6 py-7 sm:px-8 sm:py-8"
+      className="mt-2 border-t border-[#D8D1C5] bg-[#F2EEE6]/35 px-6 py-7 sm:px-8 sm:py-8"
       aria-labelledby="sniff-quest-title"
     >
       <div className="mx-auto max-w-4xl">
