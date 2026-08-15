@@ -1,7 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { analyzeSceneWithGemini } from "../src/server/geminiService";
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -11,14 +9,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  try {
-    const { imageBase64, mimeType } = req.body ?? {};
+  const { imageBase64, mimeType } = req.body ?? {};
 
-    if (!imageBase64 || typeof imageBase64 !== "string") {
-      return res.status(400).json({
-        error: "IMAGE_REQUIRED",
-      });
-    }
+  if (!imageBase64 || typeof imageBase64 !== "string") {
+    return res.status(400).json({
+      error: "IMAGE_REQUIRED",
+    });
+  }
+
+  try {
+    /**
+     * Load the Gemini integration only after
+     * the request has passed basic validation.
+     *
+     * This prevents a provider/module startup
+     * problem from crashing the entire Vercel
+     * function before the handler can respond.
+     */
+    const { analyzeSceneWithGemini } =
+      await import("../src/server/geminiService");
 
     const result = await analyzeSceneWithGemini(
       imageBase64,
