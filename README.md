@@ -10,11 +10,19 @@
 
 **The world is different down here.**
 
+[Live Experience](https://sniff-omega.vercel.app/) · [Video Demo](https://youtu.be/3nAHfvdLjY8) · [Source Code](https://github.com/SushyamNagallapati/sniff)
+
 SNIFF is a multimodal web experience that uses Google Gemini to examine an environment from a dog-oriented exploratory perspective.
 
 Users can upload a photograph or capture a scene with their camera. SNIFF analyzes visible features such as surfaces, vegetation, movement, people, pathways, lighting, and environmental structure, then transforms the result into an interactive field report.
 
 The experience is designed as an editorial field guide rather than a traditional AI chatbot or dashboard.
+
+## Demo
+
+[![Watch the SNIFF Gemini multimodal image analysis demo](https://img.youtube.com/vi/3nAHfvdLjY8/maxresdefault.jpg)](https://youtu.be/3nAHfvdLjY8)
+
+The demo covers the pre-analyzed sample experience, interactive discovery markers, Original and Dog View, a live photograph upload, Gemini processing, and the generated Field Report.
 
 ## Overview
 
@@ -205,7 +213,7 @@ model instruction, response schema, or validation rules must be kept aligned.
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/SushyamNagallapati/sniff.git
 cd sniff
 ```
 
