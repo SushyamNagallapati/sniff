@@ -686,6 +686,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       stack,
     });
 
+    if (message === "IMAGE_TOO_LARGE") {
+      return res.status(413).json({ error: message });
+    }
+
+    if (message === "UNSUPPORTED_IMAGE_TYPE") {
+      return res.status(415).json({ error: message });
+    }
+
+    if (message === "INVALID_IMAGE_DATA") {
+      return res.status(400).json({ error: message });
+    }
+
     return res.status(500).json({
       error: "SERVICE_UNAVAILABLE",
     });

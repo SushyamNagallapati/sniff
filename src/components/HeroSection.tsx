@@ -315,6 +315,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 src={featured.imageUrl}
                 alt={`${featuredTitle} sample scene`}
                 onLoad={onFeaturedLoad}
+                fetchPriority="high"
+                decoding="async"
                 className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-cinematic ease-ambient group-hover:scale-[1.028] group-hover:saturate-100"
               />
 
@@ -427,6 +429,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <img
                     src={scene.imageUrl}
                     alt={cleanTitle(scene.title)}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover saturate-[0.9] transition-[transform,filter] duration-cinematic ease-ambient group-hover:scale-[1.035] group-hover:saturate-100"
                   />
 

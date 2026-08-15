@@ -112,6 +112,7 @@ export const PhotoFrame: React.FC<PhotoFrameProps> = ({
                 src={imageUrl}
                 alt={alt}
                 onLoad={onLoad}
+                decoding="async"
                 className="h-full w-full object-cover"
               />
             ) : (

@@ -152,12 +152,20 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
                 className="relative"
                 onMouseEnter={() => setShowInfo(true)}
                 onMouseLeave={() => setShowInfo(false)}
+                onFocus={() => setShowInfo(true)}
+                onBlur={() => setShowInfo(false)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setShowInfo(false);
+                  }
+                }}
               >
                 <button
                   type="button"
                   onClick={() => setShowInfo((current) => !current)}
                   aria-label="About Dog View"
                   aria-expanded={showInfo}
+                  aria-describedby={showInfo ? "dog-view-description" : undefined}
                   className="relative flex h-6 w-6 items-center justify-center rounded-full text-dark-faint before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] transition-colors duration-fast hover:text-[#FCFAF5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FCFAF5]"
                 >
                   <Info aria-hidden="true" className="h-3.5 w-3.5" />
@@ -166,6 +174,7 @@ export const ImageViewport: React.FC<ImageViewportProps> = ({
                 <AnimatePresence>
                   {showInfo && (
                     <motion.div
+                      id="dog-view-description"
                       role="tooltip"
                       initial={{
                         opacity: 0,

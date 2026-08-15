@@ -42,6 +42,20 @@ app.post("/api/sniff", async (req, res) => {
   } catch (err: unknown) {
     console.error("Server error during /api/sniff analysis:", err);
 
+    const message = err instanceof Error ? err.message : String(err);
+
+    if (message === "IMAGE_TOO_LARGE") {
+      return res.status(413).json({ error: message });
+    }
+
+    if (message === "UNSUPPORTED_IMAGE_TYPE") {
+      return res.status(415).json({ error: message });
+    }
+
+    if (message === "INVALID_IMAGE_DATA") {
+      return res.status(400).json({ error: message });
+    }
+
     return res.status(500).json({
       error: "SERVICE_UNAVAILABLE",
     });

@@ -7,6 +7,8 @@ import { analyzeSceneWithGemini } from "./src/server/geminiService";
 
 dotenv.config();
 
+const MAX_DEV_REQUEST_BODY_LENGTH = 35 * 1024 * 1024;
+
 function sniffApiPlugin(): Plugin {
   return {
     name: "sniff-api-plugin",
@@ -25,11 +27,29 @@ function sniffApiPlugin(): Plugin {
 
         if (req.url === "/api/sniff" && req.method === "POST") {
           let body = "";
+          let bodyTooLarge = false;
+
           req.on("data", (chunk) => {
+            if (bodyTooLarge) {
+              return;
+            }
+
             body += chunk;
+
+            if (body.length > MAX_DEV_REQUEST_BODY_LENGTH) {
+              body = "";
+              bodyTooLarge = true;
+            }
           });
 
           req.on("end", async () => {
+            if (bodyTooLarge) {
+              res.statusCode = 413;
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ error: "IMAGE_TOO_LARGE" }));
+              return;
+            }
+
             try {
               const { imageBase64, mimeType } = JSON.parse(body);
               if (!imageBase64) {

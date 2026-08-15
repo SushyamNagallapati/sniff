@@ -36,6 +36,9 @@ export const CameraModal: React.FC<CameraModalProps> = ({
    */
   const streamRef = useRef<MediaStream | null>(null);
 
+  /** Only the newest permission/device request may install a stream. */
+  const cameraRequestRef = useRef(0);
+
   const [error, setError] = useState<string | null>(null);
 
   const [facingMode, setFacingMode] = useState<FacingMode>("environment");
@@ -60,6 +63,8 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
   const startCamera = useCallback(
     async (mode: FacingMode) => {
+      const requestId = ++cameraRequestRef.current;
+
       setIsInitializing(true);
       setError(null);
 
@@ -88,6 +93,11 @@ export const CameraModal: React.FC<CameraModalProps> = ({
           audio: false,
         });
 
+        if (requestId !== cameraRequestRef.current) {
+          mediaStream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
         streamRef.current = mediaStream;
 
         const video = videoRef.current;
@@ -101,6 +111,10 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
         await video.play();
       } catch (caughtError: unknown) {
+        if (requestId !== cameraRequestRef.current) {
+          return;
+        }
+
         console.error("Camera access error:", caughtError);
 
         stopCamera();
@@ -130,7 +144,9 @@ export const CameraModal: React.FC<CameraModalProps> = ({
           );
         }
       } finally {
-        setIsInitializing(false);
+        if (requestId === cameraRequestRef.current) {
+          setIsInitializing(false);
+        }
       }
     },
     [stopCamera],
@@ -138,6 +154,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
+      cameraRequestRef.current += 1;
       stopCamera();
       return;
     }
@@ -145,6 +162,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
     void startCamera(facingMode);
 
     return () => {
+      cameraRequestRef.current += 1;
       stopCamera();
     };
   }, [isOpen, facingMode, startCamera, stopCamera]);
@@ -159,6 +177,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        cameraRequestRef.current += 1;
         stopCamera();
         onClose();
       }
@@ -175,6 +194,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
   const handleClose = () => {
     sensoryAudio.playClick();
+    cameraRequestRef.current += 1;
     stopCamera();
     onClose();
   };
@@ -226,6 +246,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
     const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
 
+    cameraRequestRef.current += 1;
     stopCamera();
 
     /**

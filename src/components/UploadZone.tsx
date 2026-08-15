@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { AlertCircle, Camera, Upload } from "lucide-react";
 
 import { sensoryAudio } from "../utils/audioSensory";
+import { prepareImageUpload } from "../utils/prepareImageUpload";
 import { Button } from "./Button";
 
 interface UploadZoneProps {
@@ -45,7 +46,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
     }
   };
 
-  const processFile = (file: File) => {
+  const processFile = async (file: File) => {
     setErrorMessage(null);
 
     if (!SUPPORTED_IMAGE_TYPES.has(file.type)) {
@@ -63,28 +64,14 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (typeof reader.result !== "string") {
-        setErrorMessage("SNIFF could not read this image.");
-        return;
-      }
+    try {
+      const preparedImage = await prepareImageUpload(file);
 
       sensoryAudio.playClick();
-
-      onImageSelected(reader.result, file);
-    };
-
-    reader.onerror = () => {
+      onImageSelected(preparedImage, file);
+    } catch {
       setErrorMessage("SNIFF could not read this image. Try another file.");
-    };
-
-    reader.onabort = () => {
-      setErrorMessage("Image selection was interrupted.");
-    };
-
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -100,7 +87,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
     const file = event.dataTransfer.files?.[0];
 
     if (file) {
-      processFile(file);
+      void processFile(file);
     }
   };
 
@@ -130,7 +117,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
           const file = event.target.files?.[0];
 
           if (file) {
-            processFile(file);
+            void processFile(file);
           }
         }}
       />

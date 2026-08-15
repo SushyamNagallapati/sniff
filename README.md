@@ -187,7 +187,12 @@ SNIFF uses two backend entry points depending on the environment:
 - `server.ts` provides the Express server used for local production testing.
 - `api/health.ts` and `api/sniff.ts` are deployed as Vercel Functions.
 
-Both paths reuse the same Gemini analysis logic from `src/server/geminiService.ts`, keeping model configuration and response validation centralized.
+The Express and Vite development paths reuse `src/server/geminiService.ts`.
+The deployed Vercel function keeps an equivalent self-contained Gemini boundary
+inside `api/sniff.ts` so its runtime dependencies are bundled reliably.
+
+Because these server entry points intentionally remain separate, changes to the
+model instruction, response schema, or validation rules must be kept aligned.
 
 ## Running Locally
 
@@ -288,13 +293,15 @@ SNIFF currently accepts:
 - PNG
 - WebP
 
-Maximum upload size:
+Maximum file-selection size:
 
 ```text
 15 MB
 ```
 
 Camera captures are resized when necessary before analysis to avoid unnecessarily large payloads.
+Regular uploads are also normalized in the browser to a maximum 1920-pixel
+dimension and encoded as an optimized JPEG before being sent for analysis.
 
 ## Design Direction
 
