@@ -1,3 +1,11 @@
+<p align="center">
+  <img
+    src="public/sniff-og.png"
+    alt="SNIFF, a Gemini-powered field guide exploring everyday environments from a dog-oriented perspective"
+    width="100%"
+  />
+</p>
+
 # SNIFF
 
 **The world is different down here.**
