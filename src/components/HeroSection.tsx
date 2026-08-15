@@ -1,8 +1,9 @@
-import React from 'react';
-import { ArrowRight, Camera } from 'lucide-react';
-import { SAMPLE_SCENES } from '../data/sampleScenes';
-import { SampleScene } from '../types/sniff';
-import { sensoryAudio } from '../utils/audioSensory';
+import React from "react";
+import { ArrowRight, Camera } from "lucide-react";
+
+import { SAMPLE_SCENES } from "../data/sampleScenes";
+import type { SampleScene } from "../types/sniff";
+import { sensoryAudio } from "../utils/audioSensory";
 
 interface HeroSectionProps {
   onStartSniffing: () => void;
@@ -15,287 +16,234 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onSelectSample,
   onOpenCamera,
 }) => {
+  const openSample = (scene: SampleScene) => {
+    sensoryAudio.playClick();
+    onSelectSample(scene);
+  };
+
+  const cleanTitle = (title: string) =>
+    title
+      .replace(/^\d+\s*[—-]\s*/, "")
+      .toLowerCase()
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+
   return (
-    <section className="mx-auto max-w-7xl px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
-      {/* Top Editorial Rule & Index */}
-      <div className="mb-8 border-b border-[#E6E1D8] pb-3 text-[#7A7468]">
-        <span className="font-data text-xs uppercase tracking-widest text-[#4A5839]">
-          FIELD 001
-        </span>
-      </div>
+    <main className="mx-auto w-full max-w-[1320px] px-5 sm:px-7 lg:px-10">
+      {/* HERO */}
+      <section className="border-b border-[#D8D1C5] pb-16 pt-10 sm:pt-12 lg:pb-20 lg:pt-14">
+        <div className="mb-6 flex items-center justify-between border-b border-[#D8D1C5] pb-3">
+          <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B] sm:text-[9px]">
+            CANINE FIELD STUDY
+          </span>
 
-      {/* Hero Content Grid */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
-        {/* Left Column: Typography & Action */}
-        <div className="lg:col-span-7">
-          <h1 className="font-editorial text-5xl leading-[1.05] font-light tracking-tight text-[#191816] sm:text-6xl md:text-7xl">
-            THE WORLD <br />
-            IS DIFFERENT <br />
-            <span className="italic text-[#4A5839]">DOWN HERE.</span>
-          </h1>
-
-          <p className="mt-6 max-w-xl font-sans text-base leading-relaxed text-[#524E46] sm:text-lg">
-            Explore a scene from a dog-oriented perspective. Gemini identifies
-            visible movement, surfaces, vegetation, people, and places that may
-            be worth investigating.
-          </p>
-
-          {/* Primary Action Button */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <button
-              onClick={() => {
-                sensoryAudio.playClick();
-                onStartSniffing();
-              }}
-              className="group inline-flex items-center gap-3 rounded-full bg-[#191816] px-8 py-3.5 font-data text-xs font-semibold uppercase tracking-wider text-[#FBF9F5] shadow-xs transition-all hover:bg-[#4A5839]"
-            >
-              <span>START SNIFFING</span>
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-            </button>
-
-            <button
-              onClick={() => {
-                sensoryAudio.playClick();
-                onOpenCamera();
-              }}
-              className="inline-flex items-center gap-2 rounded-full border border-[#D5CEBF] bg-[#FAF8F3] px-6 py-3.5 font-data text-xs font-medium uppercase tracking-wider text-[#191816] transition-all hover:border-[#B8B09F] hover:bg-[#EAE4D8]"
-            >
-              <Camera className="h-3.5 w-3.5 text-[#4A5839]" />
-              <span>USE CAMERA</span>
-            </button>
-          </div>
+          <span className="hidden font-data text-[8px] uppercase tracking-[0.18em] text-[#918B81] sm:block">
+            MULTIMODAL OBSERVATION
+          </span>
         </div>
 
-        {/* Right Column: Hero Figure - sits directly in composition */}
-        <div className="lg:col-span-5">
-          <div className="relative">
-            {/* Minimal Figure Image */}
-            <div
-              onClick={() => {
-                sensoryAudio.playClick();
-                onSelectSample(SAMPLE_SCENES[0]);
-              }}
-              className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden border border-[#D5CEBF] bg-[#EBE6DC]"
-            >
-              <img
-                src={SAMPLE_SCENES[0].imageUrl}
-                alt="City Park specimen preview"
-                className="h-full w-full object-cover grayscale-[15%] transition-transform duration-700 group-hover:scale-[1.03]"
-              />
+        <div className="grid grid-cols-1 gap-11 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16 xl:gap-20">
+          {/* HERO COPY */}
+          <div className="flex flex-col">
+            <h1 className="max-w-[690px] font-editorial text-[clamp(4rem,6.4vw,6.9rem)] font-light leading-[0.87] tracking-[-0.055em] text-[#1D1C19]">
+              <span className="block">The world is</span>
 
-              {/* Discovery marker pins on preview */}
-              <div className="absolute top-[55%] left-[32%] -translate-x-1/2 -translate-y-1/2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#4A5839] font-data text-[11px] font-bold text-white shadow-xs">
-                  01
-                </span>
-              </div>
-              <div className="absolute top-[72%] left-[58%] -translate-x-1/2 -translate-y-1/2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full border border-white bg-[#856128] font-data text-[10px] font-bold text-white shadow-xs">
-                  02
-                </span>
-              </div>
+              <span className="block">different</span>
+
+              <span className="block italic text-[#43513B]">down here.</span>
+            </h1>
+
+            <p className="mt-8 max-w-[585px] font-sans text-[15px] leading-[1.8] text-[#625D55] sm:text-[16px]">
+              See an everyday environment from a lower, dog-oriented
+              perspective. SNIFF examines visible details that may otherwise
+              pass unnoticed.
+            </p>
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#8C867C]">
+              <span>Visible evidence only</span>
+
+              <span aria-hidden="true" className="text-[#C1BAAE]">
+                /
+              </span>
+
+              <span>No scent detection</span>
+
+              <span aria-hidden="true" className="text-[#C1BAAE]">
+                /
+              </span>
+
+              <span>No behavioral claims</span>
             </div>
 
-            {/* Minimal figure caption metadata with subtle PRE-ANALYZED SAMPLE indicator */}
-            <div className="mt-3 flex items-baseline justify-between font-data text-xs text-[#7A7468]">
-              <div>
-                <span className="font-semibold text-[#191816]">FIG. 01</span>
-                <span className="mx-2 text-[#D5CEBF]">&middot;</span>
-                <span>CITY PARK</span>
-                <span className="mx-2 text-[#D5CEBF]">&middot;</span>
-                <span className="text-[10px] uppercase tracking-wider text-[#7A7468]">PRE-ANALYZED SAMPLE</span>
-              </div>
-              <span className="text-[#4A5839]">5 DISCOVERIES</span>
+            <div className="mt-9 flex flex-wrap items-center gap-6">
+              <button
+                type="button"
+                onClick={() => {
+                  sensoryAudio.playClick();
+                  onStartSniffing();
+                }}
+                className="group inline-flex min-h-12 items-center gap-6 bg-[#1D1C19] px-6 py-3 font-data text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FCFAF5] transition-[background-color,transform] duration-200 hover:-translate-y-[1px] hover:bg-[#43513B] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
+              >
+                Start sniffing
+                <ArrowRight
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sensoryAudio.playClick();
+                  onOpenCamera();
+                }}
+                className="group relative inline-flex min-h-12 items-center gap-3 px-1 py-3 font-data text-[9px] font-medium uppercase tracking-[0.17em] text-[#4E4A43] transition-colors hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
+              >
+                <Camera
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-rotate-6"
+                />
+                Use camera
+                <span className="absolute bottom-2 left-1 h-px w-[calc(100%-0.5rem)] origin-left scale-x-100 bg-[#AAA296] transition-transform duration-300 group-hover:scale-x-0" />
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* SAMPLE SCENES - Deliberately Asymmetric Editorial Composition */}
-      <div className="mt-14 sm:mt-20 border-t border-[#E6E1D8] pt-6 sm:pt-8">
-        <div className="mb-6 sm:mb-8 flex items-baseline justify-between">
-          <div className="flex items-center gap-3">
-            <h2 className="font-data text-xs font-semibold uppercase tracking-widest text-[#191816]">
-              SAMPLE SCENES
+          {/* FEATURED SAMPLE */}
+          <button
+            type="button"
+            onClick={() => openSample(SAMPLE_SCENES[0])}
+            aria-label="Open City Park pre-analyzed sample"
+            className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4"
+          >
+            <div className="relative overflow-hidden bg-[#E7E1D6]">
+              <div className="aspect-[5/4]">
+                <img
+                  src={SAMPLE_SCENES[0].imageUrl}
+                  alt="City Park sample scene"
+                  className="h-full w-full object-cover saturate-[0.94] transition-[transform,filter] duration-[900ms] ease-out group-hover:scale-[1.018] group-hover:saturate-100"
+                />
+              </div>
+
+              <span className="absolute left-0 top-0 bg-[#F6F3EC] px-3 py-2 font-data text-[8px] uppercase tracking-[0.18em] text-[#43513B]">
+                PRE-ANALYZED SAMPLE
+              </span>
+
+              <span className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5]/90 bg-[#43513B] font-data text-[8px] font-medium text-white shadow-md transition-transform duration-300 group-hover:scale-110">
+                01
+              </span>
+
+              <span className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5]/90 bg-[#1D1C19]/80 font-data text-[7px] text-white shadow-md transition-transform duration-300 group-hover:scale-110">
+                02
+              </span>
+
+              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-300 group-hover:ring-black/10" />
+            </div>
+
+            <div className="flex items-center justify-between border-b border-[#D8D1C5] py-3">
+              <div className="flex items-center gap-3">
+                <span className="font-data text-[8px] text-[#43513B]">
+                  FIG. 01
+                </span>
+
+                <span className="font-data text-[8px] uppercase tracking-[0.15em] text-[#716C63]">
+                  CITY PARK
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 font-data text-[7px] uppercase tracking-[0.14em] text-[#8C867C]">
+                <span>5 DISCOVERIES</span>
+
+                <ArrowRight
+                  aria-hidden="true"
+                  className="h-3 w-3 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                />
+              </div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      {/* SAMPLE SCENES */}
+      <section
+        aria-labelledby="sample-scenes-heading"
+        className="border-b border-[#D8D1C5] py-16 lg:py-20"
+      >
+        <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B]">
+              FIELD INDEX / 03 SCENES
+            </span>
+
+            <h2
+              id="sample-scenes-heading"
+              className="mt-2 font-editorial text-[2.55rem] font-light leading-none tracking-[-0.025em] text-[#1D1C19]"
+            >
+              Pre-analyzed scenes
             </h2>
-            <span className="font-data text-[10px] uppercase tracking-wider text-[#7A7468]">
-              [PRE-ANALYZED]
-            </span>
           </div>
-          <span className="font-data text-xs text-[#7A7468]">SELECT TO EXPLORE</span>
+
+          <p className="max-w-[370px] font-sans text-xs leading-5 text-[#716C63] sm:text-right">
+            Explore the interface without uploading a photograph. Sample reports
+            are clearly separated from live analysis.
+          </p>
         </div>
 
-        {/* Asymmetrical 3-scene layout: Scene 1 Large Left / Scene 2 Smaller Right / Scene 3 Full Width Below */}
-        <div className="space-y-8 sm:space-y-10">
-          {/* Row 1: Scene 01 (Large Left) & Scene 02 (Aligned Right) */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-            {/* Scene 01: Large Left */}
-            <div className="lg:col-span-7">
-              <div
-                onClick={() => {
-                  sensoryAudio.playClick();
-                  onSelectSample(SAMPLE_SCENES[0]);
-                }}
-                className="group cursor-pointer"
+        <div className="grid grid-cols-1 gap-x-7 gap-y-10 md:grid-cols-3">
+          {SAMPLE_SCENES.map((scene, index) => (
+            <article key={scene.id} className="group">
+              <button
+                type="button"
+                onClick={() => openSample(scene)}
+                className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4"
               >
-                <div className="aspect-[16/9] w-full overflow-hidden border border-[#D5CEBF] bg-[#EBE6DC]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#E7E1D6]">
                   <img
-                    src={SAMPLE_SCENES[0].imageUrl}
-                    alt={SAMPLE_SCENES[0].title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                    src={scene.imageUrl}
+                    alt={cleanTitle(scene.title)}
+                    className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-[850ms] ease-out group-hover:scale-[1.025] group-hover:saturate-100"
                   />
-                </div>
 
-                <div className="mt-2.5 flex items-baseline justify-between">
-                  <div>
-                    <span className="font-data text-xs font-semibold text-[#4A5839]">01</span>
-                    <h3 className="inline ml-2 font-editorial text-xl text-[#191816] group-hover:text-[#4A5839] sm:text-2xl">
-                      CITY PARK
-                    </h3>
-                  </div>
-                  <span className="font-data text-[10px] uppercase tracking-wider text-[#7A7468]">
-                    PRE-ANALYZED SAMPLE
+                  <div className="absolute inset-0 bg-[#1D1C19]/0 transition-colors duration-300 group-hover:bg-[#1D1C19]/[0.035]" />
+
+                  <span className="absolute bottom-3 right-3 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full bg-[#F6F3EC] text-[#43513B] opacity-0 shadow-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                   </span>
                 </div>
 
-                <p className="mt-1 font-sans text-xs leading-relaxed text-[#635E55] sm:text-sm">
-                  {SAMPLE_SCENES[0].description}
-                </p>
+                <div className="mt-3 border-t border-[#CBC4B8] pt-3">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-data text-[8px] text-[#43513B]">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
 
-                <div className="mt-1.5 flex items-center gap-1 font-data text-xs font-medium text-[#4A5839]">
-                  <span>EXPLORE</span>
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
-            </div>
+                      <h3 className="font-editorial text-[1.65rem] font-light leading-none tracking-[-0.015em] text-[#2A2824] transition-colors duration-300 group-hover:text-[#43513B]">
+                        {cleanTitle(scene.title)}
+                      </h3>
+                    </div>
 
-            {/* Scene 02: Smaller Aligned Right */}
-            <div className="lg:col-span-5 lg:pl-2">
-              <div
-                onClick={() => {
-                  sensoryAudio.playClick();
-                  onSelectSample(SAMPLE_SCENES[1]);
-                }}
-                className="group cursor-pointer"
-              >
-                <div className="aspect-[16/10] w-full overflow-hidden border border-[#D5CEBF] bg-[#EBE6DC]">
-                  <img
-                    src={SAMPLE_SCENES[1].imageUrl}
-                    alt={SAMPLE_SCENES[1].title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                  />
-                </div>
-
-                <div className="mt-2.5 flex items-baseline justify-between">
-                  <div>
-                    <span className="font-data text-xs font-semibold text-[#4A5839]">02</span>
-                    <h3 className="inline ml-2 font-editorial text-lg text-[#191816] group-hover:text-[#4A5839] sm:text-xl">
-                      WOODLAND TRAIL
-                    </h3>
+                    <span className="font-data text-[7px] uppercase tracking-[0.15em] text-[#918B81]">
+                      SAMPLE
+                    </span>
                   </div>
-                  <span className="font-data text-[10px] uppercase tracking-wider text-[#7A7468]">
-                    PRE-ANALYZED SAMPLE
-                  </span>
-                </div>
 
-                <p className="mt-1 font-sans text-xs leading-relaxed text-[#635E55] sm:text-sm">
-                  {SAMPLE_SCENES[1].description}
-                </p>
+                  <p className="mt-3 min-h-[58px] font-sans text-[11px] leading-[1.65] text-[#716C63]">
+                    {scene.description}
+                  </p>
 
-                <div className="mt-1.5 flex items-center gap-1 font-data text-xs font-medium text-[#4A5839]">
-                  <span>EXPLORE</span>
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 2: Scene 03 Wide Horizontal Image */}
-          <div className="border-t border-[#F0ECE2] pt-6 sm:pt-8">
-            <div
-              onClick={() => {
-                sensoryAudio.playClick();
-                onSelectSample(SAMPLE_SCENES[2]);
-              }}
-              className="group cursor-pointer grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-center lg:gap-8"
-            >
-              <div className="lg:col-span-8">
-                <div className="aspect-[24/9] w-full overflow-hidden border border-[#D5CEBF] bg-[#EBE6DC]">
-                  <img
-                    src={SAMPLE_SCENES[2].imageUrl}
-                    alt={SAMPLE_SCENES[2].title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                  />
-                </div>
-              </div>
-
-              <div className="lg:col-span-4">
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <span className="font-data text-xs font-semibold text-[#4A5839]">03</span>
-                    <h3 className="inline ml-2 font-editorial text-xl text-[#191816] group-hover:text-[#4A5839] sm:text-2xl">
-                      HOME KITCHEN
-                    </h3>
+                  <div className="mt-3 inline-flex items-center gap-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#43513B]">
+                    Open report
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1"
+                    />
                   </div>
-                  <span className="font-data text-[10px] uppercase tracking-wider text-[#7A7468]">
-                    PRE-ANALYZED SAMPLE
-                  </span>
                 </div>
-
-                <p className="mt-1.5 font-sans text-xs leading-relaxed text-[#635E55] sm:text-sm">
-                  {SAMPLE_SCENES[2].description}
-                </p>
-
-                <div className="mt-2 flex items-center gap-1 font-data text-xs font-medium text-[#4A5839]">
-                  <span>EXPLORE</span>
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
-            </div>
-          </div>
+              </button>
+            </article>
+          ))}
         </div>
-      </div>
-
-      {/* HOW IT WORKS - Minimal text columns */}
-      <div className="mt-14 sm:mt-20 border-t border-[#E6E1D8] pt-6 sm:pt-8">
-        <div className="mb-6 sm:mb-8 flex items-baseline justify-between">
-          <h2 className="font-data text-xs font-semibold uppercase tracking-widest text-[#191816]">
-            HOW IT WORKS
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-10">
-          {/* Step 01 */}
-          <div className="space-y-2 border-t border-[#E6E1D8] pt-3 sm:pt-4">
-            <span className="font-data text-xs font-semibold uppercase tracking-widest text-[#4A5839]">
-              01 LOOK
-            </span>
-            <p className="font-sans text-sm leading-relaxed text-[#524E46]">
-              Gemini examines visible elements in the scene.
-            </p>
-          </div>
-
-          {/* Step 02 */}
-          <div className="space-y-2 border-t border-[#E6E1D8] pt-3 sm:pt-4">
-            <span className="font-data text-xs font-semibold uppercase tracking-widest text-[#4A5839]">
-              02 INTERPRET
-            </span>
-            <p className="font-sans text-sm leading-relaxed text-[#524E46]">
-              SNIFF ranks features that may matter from a dog-oriented perspective.
-            </p>
-          </div>
-
-          {/* Step 03 */}
-          <div className="space-y-2 border-t border-[#E6E1D8] pt-3 sm:pt-4">
-            <span className="font-data text-xs font-semibold uppercase tracking-widest text-[#4A5839]">
-              03 EXPLORE
-            </span>
-            <p className="font-sans text-sm leading-relaxed text-[#524E46]">
-              The scene becomes an interactive field report with discoveries and a Sniff Quest.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 };
