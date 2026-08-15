@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { AlertCircle, Camera, Upload } from "lucide-react";
 
 import { sensoryAudio } from "../utils/audioSensory";
+import { Button } from "./Button";
 
 interface UploadZoneProps {
   onImageSelected: (base64Image: string, file?: File) => void;
@@ -117,19 +118,6 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
     setIsDragging(false);
   };
 
-  const handleDropZoneKeyDown = (
-    event: React.KeyboardEvent<HTMLDivElement>,
-  ) => {
-    if (isAnalyzing) {
-      return;
-    }
-
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      openFilePicker();
-    }
-  };
-
   return (
     <div className="w-full">
       <input
@@ -147,60 +135,61 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
         }}
       />
 
+      {/*
+       * A drop target, not a control.
+       *
+       * This was role="button" wrapping two real buttons,
+       * which is invalid ARIA and left the inner controls
+       * unreliably exposed. Drag-and-drop is a mouse
+       * affordance; the keyboard path is the Choose photo
+       * button inside it.
+       */}
       <div
-        role="button"
-        tabIndex={isAnalyzing ? -1 : 0}
-        aria-disabled={isAnalyzing}
-        aria-label="Choose a scene image"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onKeyDown={handleDropZoneKeyDown}
         onClick={() => {
           if (!isAnalyzing) {
             openFilePicker();
           }
         }}
-        className={`group relative border border-dashed p-8 text-center transition-colors sm:p-12 ${
+        className={`group relative border border-dashed p-8 text-center transition-colors duration-fast sm:p-12 ${
           isAnalyzing
-            ? "cursor-wait border-[#D5CEBF] bg-[#FAF8F3] opacity-70"
+            ? "cursor-wait border-rule bg-paper opacity-70"
             : isDragging
-              ? "cursor-pointer border-[#4A5839] bg-[#F4F0E8]"
-              : "cursor-pointer border-[#D5CEBF] bg-white hover:border-[#4A5839] hover:bg-[#FAF8F3]"
-        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839] focus-visible:ring-offset-2`}
+              ? "cursor-pointer border-forest bg-surface"
+              : "cursor-pointer border-rule bg-paper hover:border-forest hover:bg-surface"
+        }`}
       >
         <div className="mx-auto flex max-w-md flex-col items-center">
-          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-[#D5CEBF] bg-[#FAF8F3] text-[#4A5839]">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-[#D8D1C5] bg-[#FCFAF5] text-[#43513B]">
             <Upload aria-hidden="true" className="h-5 w-5" />
           </div>
 
-          <h3 className="font-editorial text-2xl font-light text-[#191816] sm:text-3xl">
+          <h3 className="font-editorial text-2xl font-light text-[#1D1C19] sm:text-3xl">
             Choose a scene or use your camera.
           </h3>
 
-          <p className="mt-2 font-sans text-sm text-[#635E55]">
+          <p className="mt-2 font-sans text-sm text-[#625D55]">
             Outdoor and indoor environments both work.
           </p>
 
-          <p className="mt-1 font-data text-[10px] uppercase tracking-wider text-[#8C867A]">
+          <p className="mt-1 font-data text-[10px] uppercase tracking-wider text-faint">
             JPEG · PNG · WEBP · MAX 15 MB
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
+            <Button
               disabled={isAnalyzing}
               onClick={(event) => {
                 event.stopPropagation();
                 openFilePicker();
               }}
-              className="rounded-full bg-[#191816] px-6 py-2.5 font-data text-xs font-semibold uppercase tracking-wider text-[#FBF9F5] transition hover:bg-[#4A5839] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               CHOOSE PHOTO
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
               disabled={isAnalyzing}
               onClick={(event) => {
                 event.stopPropagation();
@@ -208,15 +197,15 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
                 sensoryAudio.playClick();
                 onOpenCamera();
               }}
-              className="flex items-center gap-2 rounded-full border border-[#D5CEBF] bg-[#FAF8F3] px-5 py-2.5 font-data text-xs font-medium uppercase tracking-wider text-[#191816] transition hover:bg-[#EAE4D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              variant="secondary"
             >
               <Camera
                 aria-hidden="true"
-                className="h-3.5 w-3.5 text-[#4A5839]"
+                className="h-3.5 w-3.5 text-[#43513B]"
               />
 
               <span>USE CAMERA</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

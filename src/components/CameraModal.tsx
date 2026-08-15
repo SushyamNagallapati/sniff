@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AlertCircle, RefreshCw, X } from "lucide-react";
 
 import { sensoryAudio } from "../utils/audioSensory";
+import { useModalFocus } from "../utils/useModalFocus";
+import { Button } from "./Button";
 
 interface CameraModalProps {
   isOpen: boolean;
@@ -18,6 +20,8 @@ export const CameraModal: React.FC<CameraModalProps> = ({
   onCapture,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const dialogRef = useRef<HTMLDivElement | null>(null);
 
   /**
    * MediaStream is imperative browser state.
@@ -162,6 +166,8 @@ export const CameraModal: React.FC<CameraModalProps> = ({
     };
   }, [isOpen, onClose, stopCamera]);
 
+  useModalFocus(isOpen, dialogRef);
+
   const handleClose = () => {
     sensoryAudio.playClick();
     stopCamera();
@@ -236,18 +242,20 @@ export const CameraModal: React.FC<CameraModalProps> = ({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#191816]/80 p-4 backdrop-blur-xs"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="camera-modal-title"
-    >
-      <div className="relative flex max-h-[92vh] w-full max-w-2xl flex-col border border-[#D5CEBF] bg-[#FBF9F5] shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1D1C19]/80 p-4 backdrop-blur-xs">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="camera-modal-title"
+        tabIndex={-1}
+        className="relative flex max-h-[92vh] w-full max-w-2xl flex-col overflow-y-auto border border-[#D8D1C5] bg-[#FCFAF5] shadow-xl focus:outline-none"
+      >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#E6E1D8] bg-[#FAF8F3] px-5 py-3">
+        <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#E7E1D6] bg-[#FCFAF5] px-5 py-3">
           <h2
             id="camera-modal-title"
-            className="font-editorial text-lg text-[#1A1917]"
+            className="font-editorial text-lg text-[#1D1C19]"
           >
             Camera Viewfinder
           </h2>
@@ -256,18 +264,18 @@ export const CameraModal: React.FC<CameraModalProps> = ({
             type="button"
             onClick={handleClose}
             aria-label="Close camera"
-            className="rounded-full p-1.5 text-[#635E55] transition hover:bg-[#EFE9DE] hover:text-[#1A1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839]"
+            className="rounded-full p-1.5 text-[#625D55] transition duration-fast hover:bg-[#EFE9DE] hover:text-[#1D1C19] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
           >
             <X aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
 
         {/* Viewfinder */}
-        <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-[#1A1917]">
+        <div className="relative flex aspect-[4/3] max-h-[60vh] w-full shrink-0 items-center justify-center overflow-hidden bg-[#1D1C19]">
           {error ? (
             <div
               role="alert"
-              className="flex max-w-sm flex-col items-center px-6 text-center text-[#FBF9F5]"
+              className="flex max-w-sm flex-col items-center px-6 text-center text-[#FCFAF5]"
             >
               <AlertCircle
                 aria-hidden="true"
@@ -276,19 +284,19 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
               <p className="font-editorial text-lg">Camera Access Needed</p>
 
-              <p className="mt-2 font-sans text-xs leading-relaxed text-[#C6C0B5]">
+              <p className="mt-2 font-sans text-xs leading-relaxed text-[#C1BAAE]">
                 {error}
               </p>
 
-              <button
-                type="button"
+              <Button
                 onClick={() => {
                   void startCamera(facingMode);
                 }}
-                className="mt-5 rounded-full bg-[#4A5839] px-5 py-2.5 font-data text-xs font-semibold uppercase tracking-wider text-white transition hover:bg-[#596849] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                surface="dark"
+                className="mt-5"
               >
                 TRY CAMERA AGAIN
-              </button>
+              </Button>
             </div>
           ) : (
             <video
@@ -305,7 +313,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
           {isInitializing && !error && (
             <div
-              className="absolute inset-0 flex items-center justify-center bg-[#1A1917]/70 text-[#FBF9F5]"
+              className="absolute inset-0 flex items-center justify-center bg-[#1D1C19]/70 text-[#FCFAF5]"
               aria-live="polite"
             >
               <span className="font-data text-xs uppercase tracking-widest">
@@ -316,29 +324,27 @@ export const CameraModal: React.FC<CameraModalProps> = ({
         </div>
 
         {/* Controls */}
-        <div className="flex items-center justify-between gap-4 border-t border-[#E6E1D8] bg-[#FAF8F3] px-5 py-4 sm:px-6">
+        <div className="sticky bottom-0 z-10 flex shrink-0 items-center justify-between gap-4 border-t border-[#E7E1D6] bg-[#FCFAF5] px-5 py-4 sm:px-6">
           <button
             type="button"
             onClick={toggleFacingMode}
             disabled={Boolean(error) || isInitializing}
-            className="flex items-center gap-1.5 border border-[#D5CEBF] bg-[#FAF8F3] px-3.5 py-2 font-data text-xs uppercase tracking-wider text-[#383530] transition hover:bg-[#EAE4D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839] disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center gap-1.5 border border-[#D8D1C5] bg-[#FCFAF5] px-3.5 py-2 font-data text-xs uppercase tracking-wider text-[#38352F] transition duration-fast hover:bg-[#E7E1D6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <RefreshCw
               aria-hidden="true"
-              className="h-3.5 w-3.5 text-[#4A5839]"
+              className="h-3.5 w-3.5 text-[#43513B]"
             />
 
             <span>FLIP CAMERA</span>
           </button>
 
-          <button
-            type="button"
+          <Button
             onClick={handleCapture}
             disabled={Boolean(error) || isInitializing}
-            className="rounded-full bg-[#191816] px-6 py-3 font-data text-xs font-semibold uppercase tracking-wider text-[#FBF9F5] transition hover:bg-[#4A5839] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5839] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             CAPTURE SCENE
-          </button>
+          </Button>
         </div>
       </div>
     </div>

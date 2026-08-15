@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import type { Discovery } from "../types/sniff";
 import { sensoryAudio } from "../utils/audioSensory";
+import { DURATION, EASE } from "../styles/motion";
 
 interface DiscoveryDossierProps {
   discoveries: Discovery[];
@@ -25,7 +26,7 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
 
   return (
     <section
-      className="flex flex-col border border-[#DDD6CA] bg-[#FCFAF5]/60 p-6 sm:p-8"
+      className="flex h-full flex-col border border-[#DDD6CA] bg-[#FCFAF5]/60 p-6 sm:p-8"
       aria-labelledby="selected-discovery-title"
     >
       {/* Discovery selector */}
@@ -53,10 +54,10 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
                 }}
                 aria-label={`Discovery ${index + 1}: ${discovery.label}`}
                 aria-pressed={isActive}
-                className={`flex h-7 w-7 items-center justify-center border font-data text-[9px] font-medium transition-[background-color,color,border-color,transform] duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FCFAF5] ${
+                className={`relative flex h-7 w-7 items-center justify-center border font-data before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] text-[9px] font-medium transition-[background-color,color,border-color,transform] duration-fast active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
                   isActive
                     ? "border-[#43513B] bg-[#43513B] text-[#FCFAF5]"
-                    : "border-[#E2DCD1] bg-[#F2EEE6] text-[#817B71] hover:border-[#BEB6A9] hover:bg-[#EAE5DC] hover:text-[#1D1C19]"
+                    : "border-[#D8D1C5] bg-[#F2EEE6] text-[#716C63] hover:border-[#C1BAAE] hover:bg-[#EAE5DA] hover:text-[#1D1C19]"
                 }`}
               >
                 {String(index + 1).padStart(2, "0")}
@@ -78,10 +79,10 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
           y: 0,
         }}
         transition={{
-          duration: shouldReduceMotion ? 0 : 0.26,
-          ease: [0.22, 1, 0.36, 1],
+          duration: shouldReduceMotion ? 0 : DURATION.fast,
+          ease: EASE,
         }}
-        className="space-y-6"
+        className="flex flex-1 flex-col gap-6"
       >
         {/* Title */}
         <div>
@@ -98,14 +99,14 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
             </h2>
           </div>
 
-          <p className="mt-1 font-data text-[9px] uppercase tracking-[0.17em] text-[#817B71]">
+          <p className="mt-1 font-data text-[9px] uppercase tracking-[0.17em] text-[#716C63]">
             {current.category}
           </p>
         </div>
 
         {/* SNIFF score */}
-        <div className="flex items-baseline justify-between border-y border-[#E5DFD5] py-4">
-          <span className="font-data text-[9px] uppercase tracking-[0.16em] text-[#817B71]">
+        <div className="flex items-baseline justify-between border-y border-[#E7E1D6] py-4">
+          <span className="font-data text-[9px] uppercase tracking-[0.16em] text-[#716C63]">
             SNIFF SCORE
           </span>
 
@@ -114,7 +115,7 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
               {current.interestScore}
             </span>
 
-            <span className="font-data text-[8px] text-[#918B81]">/ 100</span>
+            <span className="font-data text-[8px] text-faint">/ 100</span>
           </div>
         </div>
 
@@ -123,9 +124,9 @@ export const DiscoveryDossier: React.FC<DiscoveryDossierProps> = ({
           {current.explanation}
         </p>
 
-        {/* Confidence */}
-        <div className="border-t border-[#E5DFD5] pt-4">
-          <div className="flex items-center justify-between gap-4 font-data text-[9px] uppercase tracking-[0.15em] text-[#817B71]">
+        {/* Confidence — reads as the panel's footer, so it sits at the foot. */}
+        <div className="mt-auto border-t border-[#E7E1D6] pt-4">
+          <div className="flex items-center justify-between gap-4 font-data text-[9px] uppercase tracking-[0.15em] text-[#716C63]">
             <span>MODEL CONFIDENCE</span>
 
             <span className="text-[#625D55]">

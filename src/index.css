@@ -1,31 +1,166 @@
 @import "tailwindcss";
 
+/*
+ * Single source of truth for the SNIFF palette.
+ *
+ * `@theme` publishes each entry as a Tailwind
+ * utility (bg-canvas, text-ink, border-rule)
+ * and as a `--color-*` custom property.
+ *
+ * Nothing in src/ should introduce a new hex.
+ */
+@theme {
+  /* Grounds */
+  --color-canvas: #f6f3ec;
+  --color-paper: #fcfaf5;
+  --color-surface: #f2eee6;
+  --color-placeholder: #e7e1d6;
+
+  /*
+   * Text.
+   *
+   * Every value here clears 4.5:1 on canvas and on
+   * paper, because the smallest type in this app is
+   * 7px uppercase with wide tracking — the hardest
+   * thing on the page to read.
+   */
+  --color-ink: #1d1c19; /* 15.1:1 */
+  --color-ink-soft: #4e4a43; /* 8.3:1  */
+  --color-body: #625d55; /* 5.9:1  */
+  --color-muted: #716c63; /* 4.7:1  */
+  --color-faint: #736c60; /* 4.7:1  */
+
+  /* Accents */
+  --color-forest: #43513b;
+  --color-forest-deep: #35412f;
+  --color-moss: #6c785b;
+  --color-clay: #9b654e;
+
+  /* Rules */
+  --color-rule: #d8d1c5;
+  --color-rule-strong: #c1baae;
+
+  /* Dark surfaces (photo viewport, camera). Ratios are against --color-ink. */
+  --color-dark-rule: #38352f;
+  --color-dark-muted: #a59f94; /* 6.5:1 */
+  --color-dark-faint: #8c867c; /* 4.7:1 */
+
+  /*
+   * Motion.
+   *
+   * Two curves, and they are not interchangeable.
+   *
+   * `brand` is a hard ease-out: 90% of the movement is
+   * done in the first third. That is what makes a
+   * button or a reveal feel responsive.
+   *
+   * `ambient` spreads the movement across the whole
+   * duration. Slow photographic motion needs this —
+   * under `brand`, a 1200ms hover zoom finishes visibly
+   * in ~450ms and then creeps imperceptibly, so it
+   * reads as a fast pop no matter how long you set it.
+   *
+   * Pair `ambient` with `cinematic`, `brand` with the
+   * other three.
+   */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ambient: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-slow: 640ms;
+  --duration-cinematic: 900ms;
+
+  /* Typefaces */
+  --font-serif:
+    "Newsreader", "Newsreader Fallback", Georgia, Cambria, "Times New Roman",
+    serif;
+
+  --font-sans:
+    "Plus Jakarta Sans", "Jakarta Fallback", system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+/*
+ * Named durations.
+ *
+ * Tailwind's `duration-*` utility only takes numbers,
+ * so these are declared explicitly rather than inferred
+ * from the theme. Use them instead of duration-[300ms].
+ */
+@utility duration-fast {
+  transition-duration: var(--duration-fast);
+}
+
+@utility duration-base {
+  transition-duration: var(--duration-base);
+}
+
+@utility duration-slow {
+  transition-duration: var(--duration-slow);
+}
+
+@utility duration-cinematic {
+  transition-duration: var(--duration-cinematic);
+}
+
+/*
+ * Metric-matched fallbacks.
+ *
+ * The webfonts load with `display: swap`, so text paints
+ * immediately in a fallback and re-renders when the real
+ * face arrives. Without these the swap also *reflows*:
+ * Georgia stands 92/22 against Newsreader's 74/26, which
+ * moves every baseline in the 60–100px headline — the
+ * largest layout shift on the page, landing on the first
+ * thing anyone sees.
+ *
+ * Overrides below are measured, not guessed: advance
+ * width of a sample string at 100px, and the font
+ * bounding box ascent and descent as a share of the em.
+ */
+@font-face {
+  font-family: "Newsreader Fallback";
+  font-style: normal;
+  src: local("Georgia"), local("Times New Roman"), local("Times");
+  size-adjust: 97.1%;
+  ascent-override: 76%;
+  descent-override: 27%;
+  line-gap-override: 0%;
+}
+
+/*
+ * Italic needs its own entry: Georgia Italic runs 12%
+ * wider than Newsreader Italic, so the roman size-adjust
+ * leaves the "down here." line 23px out.
+ */
+@font-face {
+  font-family: "Newsreader Fallback";
+  font-style: italic;
+  src:
+    local("Georgia Italic"), local("Times New Roman Italic"),
+    local("Times Italic");
+  size-adjust: 89.5%;
+  ascent-override: 83%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Jakarta Fallback";
+  src: local("Helvetica Neue"), local("Arial"), local("Liberation Sans");
+  size-adjust: 105.1%;
+  ascent-override: 99%;
+  descent-override: 21%;
+  line-gap-override: 0%;
+}
+
 @layer base {
   :root {
-    --canvas: #f6f3ec;
-    --paper: #fcfaf5;
-
-    --ink: #1d1c19;
-    --ink-soft: #4e4a43;
-    --muted: #716c63;
-
-    --forest: #43513b;
-    --moss: #6c785b;
-    --clay: #9b654e;
-
-    --rule: #d8d1c5;
-    --rule-dark: #bdb5a8;
-
-    --font-serif: "Newsreader", Georgia, Cambria, "Times New Roman", serif;
-
-    --font-sans:
-      "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-
-    --font-mono:
-      "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      monospace;
-
     color-scheme: light;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -33,7 +168,7 @@
 
   html {
     scroll-behavior: smooth;
-    background: var(--canvas);
+    background: var(--color-canvas);
   }
 
   body {
@@ -42,9 +177,9 @@
 
     font-family: var(--font-sans);
 
-    background: var(--canvas);
+    background: var(--color-canvas);
 
-    color: var(--ink);
+    color: var(--color-ink);
 
     -webkit-font-smoothing: antialiased;
 
@@ -76,9 +211,9 @@
   }
 
   ::selection {
-    background: var(--forest);
+    background: var(--color-forest);
 
-    color: var(--paper);
+    color: var(--color-paper);
   }
 
   :focus-visible {
@@ -111,18 +246,6 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
 }
 
-.paper-border {
-  border-color: var(--rule);
-}
-
-.paper-bg-subtle {
-  background: #eee9df;
-}
-
-.paper-bg-card {
-  background: var(--paper);
-}
-
 /* Scrollbar */
 
 ::-webkit-scrollbar {
@@ -130,29 +253,17 @@ body::before {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--canvas);
+  background: var(--color-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c6beb1;
+  background: var(--color-rule-strong);
 
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a89f92;
-}
-
-/* Micro interaction utility */
-
-.interactive-lift {
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease;
-}
-
-.interactive-lift:hover {
-  transform: translateY(-2px);
+  background: var(--color-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -5,6 +5,10 @@ import { ArrowRight, Camera } from "lucide-react";
 import { SAMPLE_SCENES } from "../data/sampleScenes";
 import type { SampleScene } from "../types/sniff";
 import { sensoryAudio } from "../utils/audioSensory";
+import { DURATION, EASE } from "../styles/motion";
+import { useNaturalAspect } from "../utils/useNaturalAspect";
+import { SHELL } from "../styles/layout";
+import { Button } from "./Button";
 
 interface HeroSectionProps {
   onStartSniffing: () => void;
@@ -43,15 +47,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   const revealTransition = {
-    duration: shouldReduceMotion ? 0 : 0.65,
+    duration: shouldReduceMotion ? 0 : DURATION.slow,
 
-    ease: [0.22, 1, 0.36, 1] as const,
+    ease: EASE,
   };
 
+  /** The scene shown in the hero. Everything about the card derives from it. */
+  const featured = SAMPLE_SCENES[0];
+
+  const featuredTitle = cleanTitle(featured.title);
+
+  const featuredDiscoveries = featured.precomputedData.discoveries;
+
+  const { aspectRatio: featuredAspectRatio, onLoad: onFeaturedLoad } =
+    useNaturalAspect(featured.imageUrl);
+
   return (
-    <main className="mx-auto w-full max-w-[1320px] px-5 sm:px-7 lg:px-10">
+    // App already owns the <main> landmark.
+    <div className={SHELL}>
       {/* HERO */}
-      <section className="border-b border-[#D8D1C5] pb-16 pt-10 sm:pt-12 lg:pb-20 lg:pt-14">
+      {/*
+       * No closing rule here: the featured card already
+       * ends on one, and a second hairline a few
+       * centimetres below it fences off empty space.
+       */}
+      <section className="pb-16 pt-10 sm:pt-12 lg:pb-20 lg:pt-14">
         {/* Editorial metadata */}
         <motion.div
           initial={{
@@ -61,7 +81,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             opacity: 1,
           }}
           transition={{
-            duration: shouldReduceMotion ? 0 : 0.55,
+            duration: shouldReduceMotion ? 0 : DURATION.slow,
             delay: 0.02,
           }}
           className="mb-6 flex items-center justify-between border-b border-[#D8D1C5] pb-3"
@@ -70,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             CANINE FIELD STUDY
           </span>
 
-          <span className="hidden font-data text-[8px] uppercase tracking-[0.18em] text-[#918B81] sm:block">
+          <span className="hidden font-data text-[8px] uppercase tracking-[0.18em] text-faint sm:block">
             VISUAL FIELD ANALYSIS
           </span>
         </motion.div>
@@ -78,7 +98,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="grid grid-cols-1 gap-11 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16 xl:gap-20">
           {/* HERO COPY */}
           <div className="flex flex-col">
-            <h1 className="max-w-[680px] font-editorial text-[clamp(3.8rem,5.8vw,6.25rem)] font-light leading-[0.9] tracking-[-0.042em] text-[#1D1C19]">
+            {/*
+             * The floor is itself viewport-relative below
+             * ~358px, where a flat 3.8rem makes "The world
+             * is" wider than the line box. Above that the
+             * min() resolves to 3.8rem and the headline is
+             * unchanged at every size that was already fine.
+             */}
+            <h1 className="max-w-[680px] font-editorial text-[clamp(min(3.8rem,17vw),5.8vw,6.25rem)] font-light leading-[0.9] tracking-[-0.042em] text-[#1D1C19]">
               <span className="block pb-[0.04em]">
                 <motion.span
                   className="block"
@@ -160,7 +187,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 ...revealTransition,
                 delay: 0.42,
               }}
-              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-[#8C867C]"
+              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[8px] uppercase tracking-[0.15em] text-faint"
             >
               <span>Visible evidence only</span>
 
@@ -193,44 +220,48 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               className="mt-9 flex flex-wrap items-center gap-6"
             >
-              <button
-                type="button"
+              <Button
                 onClick={() => {
                   sensoryAudio.playClick();
                   onStartSniffing();
                 }}
-                className="group inline-flex min-h-12 items-center gap-6 bg-[#1D1C19] px-6 py-3 font-data text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FCFAF5] transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[1px] hover:bg-[#43513B] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
+                className="gap-6"
               >
                 Start sniffing
                 <ArrowRight
                   aria-hidden="true"
-                  className="h-3.5 w-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5"
+                  className="h-3.5 w-3.5 transition-transform duration-slow ease-brand group-hover:translate-x-1.5"
                 />
-              </button>
+              </Button>
 
-              <button
-                type="button"
+              {/*
+               * Quiet, not secondary. Here the camera is
+               * the alternative to a dominant CTA; in the
+               * upload zone it is an equal partner to
+               * "Choose photo" and takes the bordered
+               * variant. Different weight, one primitive.
+               */}
+              <Button
+                variant="quiet"
                 onClick={() => {
                   sensoryAudio.playClick();
                   onOpenCamera();
                 }}
-                className="group relative inline-flex min-h-12 items-center gap-3 px-1 py-3 font-data text-[9px] font-medium uppercase tracking-[0.17em] text-[#4E4A43] transition-colors duration-300 hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
               >
                 <Camera
                   aria-hidden="true"
-                  className="h-3.5 w-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-6"
+                  className="h-3.5 w-3.5 transition-transform duration-slow ease-brand group-hover:-rotate-6"
                 />
                 Use camera
-                <span className="absolute bottom-2 left-1 h-px w-[calc(100%-0.5rem)] origin-left scale-x-100 bg-[#AAA296] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-0" />
-              </button>
+              </Button>
             </motion.div>
           </div>
 
           {/* FEATURED SAMPLE */}
           <motion.button
             type="button"
-            onClick={() => openSample(SAMPLE_SCENES[0])}
-            aria-label="Open City Park pre-analyzed sample"
+            onClick={() => openSample(featured)}
+            aria-label={`Open ${featuredTitle} pre-analyzed sample`}
             initial={{
               opacity: 0,
               scale: shouldReduceMotion ? 1 : 0.985,
@@ -242,72 +273,73 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               y: 0,
             }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 0.8,
+              duration: shouldReduceMotion ? 0 : DURATION.slow,
               delay: 0.18,
-              ease: [0.22, 1, 0.36, 1],
+              ease: EASE,
             }}
-            className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4"
+            className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
           >
             <div className="mb-2 flex items-center justify-between">
               <span className="font-data text-[8px] uppercase tracking-[0.18em] text-[#43513B]">
                 PRE-ANALYZED SAMPLE
               </span>
 
-              <span className="font-data text-[7px] uppercase tracking-[0.15em] text-[#918B81]">
+              <span className="font-data text-[7px] uppercase tracking-[0.15em] text-faint">
                 FIELD SPECIMEN
               </span>
             </div>
 
-            <div className="relative overflow-hidden bg-[#E7E1D6]">
-              <div className="aspect-[5/4] overflow-hidden">
-                <img
-                  src={SAMPLE_SCENES[0].imageUrl}
-                  alt="City Park sample scene"
-                  className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.028] group-hover:saturate-100"
-                />
-              </div>
+            {/*
+             * The card takes the photograph's own aspect
+             * ratio so the markers below sit on the same
+             * features they will sit on inside the report.
+             */}
+            <div
+              className="relative overflow-hidden bg-[#E7E1D6]"
+              style={{ aspectRatio: featuredAspectRatio }}
+            >
+              <img
+                src={featured.imageUrl}
+                alt={`${featuredTitle} sample scene`}
+                onLoad={onFeaturedLoad}
+                className="h-full w-full object-cover saturate-[0.92] transition-[transform,filter] duration-cinematic ease-ambient group-hover:scale-[1.028] group-hover:saturate-100"
+              />
 
-              {/* Marker 01 */}
-              <motion.span
-                initial={{
-                  opacity: 0,
-                  scale: shouldReduceMotion ? 1 : 0.65,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.4,
-                  delay: 0.72,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="absolute left-[34%] top-[57%] flex h-7 w-7 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#35412F] font-data text-[8px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.24)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
-              >
-                01
-              </motion.span>
+              {/* The featured scene's real discoveries, at their real coordinates. */}
+              {featuredDiscoveries.map((discovery, index) => (
+                <motion.span
+                  key={`${discovery.label}-${index}`}
+                  aria-hidden="true"
+                  initial={{
+                    opacity: 0,
+                    scale: shouldReduceMotion ? 1 : 0.65,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : DURATION.base,
+                    delay: shouldReduceMotion ? 0 : 0.72 + index * 0.06,
+                    ease: EASE,
+                  }}
+                  style={{
+                    left: `${discovery.location.x * 100}%`,
+                    top: `${discovery.location.y * 100}%`,
+                  }}
+                  /*
+                   * Same treatment as the report's markers —
+                   * a light pin reads on bright grass and on
+                   * dark trunks alike, and the card is one
+                   * click from the report it previews.
+                   */
+                  className="absolute flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/85 bg-[#F2EEE6]/95 font-data text-[7px] font-semibold text-[#1D1C19] shadow-[0_3px_12px_rgba(0,0,0,0.2)] transition-transform duration-slow ease-brand group-hover:scale-110"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </motion.span>
+              ))}
 
-              {/* Marker 02 */}
-              <motion.span
-                initial={{
-                  opacity: 0,
-                  scale: shouldReduceMotion ? 1 : 0.65,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.4,
-                  delay: 0.78,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="absolute left-[60%] top-[73%] flex h-6 w-6 items-center justify-center rounded-full border border-[#FCFAF5] bg-[#1D1C19] font-data text-[7px] font-medium text-white shadow-[0_3px_12px_rgba(0,0,0,0.26)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
-              >
-                02
-              </motion.span>
-
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:ring-black/10" />
+              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/0 transition-all duration-slow ease-brand group-hover:ring-black/10" />
             </div>
 
             <div className="flex items-center justify-between border-b border-[#D8D1C5] py-3">
@@ -317,16 +349,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </span>
 
                 <span className="font-data text-[8px] uppercase tracking-[0.15em] text-[#716C63]">
-                  CITY PARK
+                  {featuredTitle}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 font-data text-[7px] uppercase tracking-[0.14em] text-[#8C867C]">
-                <span>5 DISCOVERIES</span>
+              <div className="flex items-center gap-2 font-data text-[7px] uppercase tracking-[0.14em] text-faint">
+                <span>
+                  {featuredDiscoveries.length}{" "}
+                  {featuredDiscoveries.length === 1
+                    ? "DISCOVERY"
+                    : "DISCOVERIES"}
+                </span>
 
                 <ArrowRight
                   aria-hidden="true"
-                  className="h-3 w-3 -translate-x-1 opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0 group-hover:opacity-100"
+                  className="h-3 w-3 -translate-x-1 opacity-0 transition-[opacity,transform] duration-slow ease-brand group-hover:translate-x-0 group-hover:opacity-100"
                 />
               </div>
             </div>
@@ -335,14 +372,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </section>
 
       {/* SAMPLE SCENES */}
+      {/*
+       * No top padding: the hero's pb already owns the
+       * break between these two sections. Both paying it
+       * stacked 160px of dead space under the card.
+       */}
       <section
         aria-labelledby="sample-scenes-heading"
-        className="border-b border-[#D8D1C5] py-16 lg:py-20"
+        className="border-b border-[#D8D1C5] pb-16 lg:pb-20"
       >
         <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
             <span className="font-data text-[8px] uppercase tracking-[0.2em] text-[#43513B]">
-              FIELD INDEX / 03 SCENES
+              FIELD INDEX / {String(SAMPLE_SCENES.length).padStart(2, "0")}{" "}
+              {SAMPLE_SCENES.length === 1 ? "SCENE" : "SCENES"}
             </span>
 
             <h2
@@ -365,35 +408,35 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <button
                 type="button"
                 onClick={() => openSample(scene)}
-                className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4"
+                className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#E7E1D6]">
                   <img
                     src={scene.imageUrl}
                     alt={cleanTitle(scene.title)}
-                    className="h-full w-full object-cover saturate-[0.9] transition-[transform,filter] duration-[1350ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035] group-hover:saturate-100"
+                    className="h-full w-full object-cover saturate-[0.9] transition-[transform,filter] duration-cinematic ease-ambient group-hover:scale-[1.035] group-hover:saturate-100"
                   />
 
-                  <div className="absolute inset-0 bg-[#1D1C19]/0 transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:bg-[#1D1C19]/[0.035]" />
+                  <div className="absolute inset-0 bg-[#1D1C19]/0 transition-colors duration-slow ease-brand group-hover:bg-[#1D1C19]/[0.035]" />
 
-                  <span className="absolute bottom-3 right-3 flex h-8 w-8 translate-y-3 items-center justify-center rounded-full bg-[#F6F3EC] text-[#43513B] opacity-0 shadow-sm transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="absolute bottom-3 right-3 flex h-8 w-8 translate-y-3 items-center justify-center rounded-full bg-[#F6F3EC] text-[#43513B] opacity-0 shadow-sm transition-[opacity,transform] duration-slow ease-brand group-hover:translate-y-0 group-hover:opacity-100">
                     <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                   </span>
                 </div>
 
-                <div className="mt-3 border-t border-[#CBC4B8] pt-3">
+                <div className="mt-3 border-t border-[#C1BAAE] pt-3">
                   <div className="flex items-baseline justify-between gap-3">
                     <div className="flex items-baseline gap-3">
                       <span className="font-data text-[8px] text-[#43513B]">
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
-                      <h3 className="font-editorial text-[1.65rem] font-light leading-none tracking-[-0.015em] text-[#2A2824] transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-[#43513B]">
+                      <h3 className="font-editorial text-[1.65rem] font-light leading-none tracking-[-0.015em] text-[#2A2824] transition-colors duration-slow ease-brand group-hover:text-[#43513B]">
                         {cleanTitle(scene.title)}
                       </h3>
                     </div>
 
-                    <span className="font-data text-[7px] uppercase tracking-[0.15em] text-[#918B81]">
+                    <span className="font-data text-[7px] uppercase tracking-[0.15em] text-faint">
                       SAMPLE
                     </span>
                   </div>
@@ -406,7 +449,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     Open report
                     <ArrowRight
                       aria-hidden="true"
-                      className="h-3 w-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5"
+                      className="h-3 w-3 transition-transform duration-slow ease-brand group-hover:translate-x-1.5"
                     />
                   </div>
                 </div>
@@ -415,6 +458,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 };

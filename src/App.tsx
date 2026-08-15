@@ -5,6 +5,8 @@ import type { SampleScene, SniffResult } from "./types/sniff";
 import { sensoryAudio } from "./utils/audioSensory";
 import { validateSniffResult } from "./utils/validateSniff";
 
+import { SCROLL_CLEARANCE, SHELL } from "./styles/layout";
+
 import { CanineVisionFilter } from "./components/CanineVisionFilter";
 import { Navbar } from "./components/Navbar";
 import { HeroSection } from "./components/HeroSection";
@@ -14,8 +16,19 @@ import { LoadingState } from "./components/LoadingState";
 import { ImageViewport } from "./components/ImageViewport";
 import { DiscoveryDossier } from "./components/DiscoveryDossier";
 import { SniffQuestCard } from "./components/SniffQuestCard";
+import { Button } from "./components/Button";
 
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
+
+/**
+ * How long a single analysis may run before SNIFF
+ * gives up and shows the error state.
+ *
+ * Without this, a stalled Gemini call leaves the user
+ * on the loading screen indefinitely with no way to
+ * tell that anything has gone wrong.
+ */
+const ANALYSIS_TIMEOUT_MS = 45_000;
 
 export default function App() {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
@@ -25,6 +38,9 @@ export default function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const [hasError, setHasError] = useState(false);
+
+  /** Lets the error state say which of the two things went wrong. */
+  const [timedOut, setTimedOut] = useState(false);
 
   const [isSampleScene, setIsSampleScene] = useState(false);
 
@@ -108,6 +124,7 @@ export default function App() {
 
     setIsAnalyzing(false);
     setHasError(false);
+    setTimedOut(false);
     setIsSampleScene(true);
 
     setSelectedDiscoveryIndex(0);
@@ -135,6 +152,7 @@ export default function App() {
 
     setIsSampleScene(false);
     setHasError(false);
+    setTimedOut(false);
     setIsDogView(true);
 
     setIsAnalyzing(true);
@@ -154,7 +172,17 @@ export default function App() {
           imageBase64: base64Image,
         }),
 
-        signal: controller.signal,
+        /*
+         * Two ways to end the request: the user changing
+         * scenes (controller) or it simply taking too
+         * long (timeout). They are distinguished in the
+         * catch below — one is silent, the other is an
+         * error the user needs to see.
+         */
+        signal: AbortSignal.any([
+          controller.signal,
+          AbortSignal.timeout(ANALYSIS_TIMEOUT_MS),
+        ]),
       });
 
       if (requestId !== analysisRequestRef.current) {
@@ -185,9 +213,15 @@ export default function App() {
 
       setIsDogView(true);
       setHasError(false);
+      setTimedOut(false);
 
       scrollToAnalysis();
     } catch (error: unknown) {
+      /*
+       * The user moved on, so there is nothing to report.
+       * A timeout rejects with TimeoutError, not
+       * AbortError, and falls through to the error state.
+       */
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       }
@@ -199,6 +233,11 @@ export default function App() {
       console.error("Scene analysis failed:", error);
 
       setSniffResult(null);
+
+      setTimedOut(
+        error instanceof DOMException && error.name === "TimeoutError",
+      );
+
       setHasError(true);
 
       scrollToAnalysis();
@@ -245,6 +284,7 @@ export default function App() {
     setSniffResult(null);
 
     setHasError(false);
+    setTimedOut(false);
     setIsAnalyzing(false);
     setIsSampleScene(false);
 
@@ -270,6 +310,7 @@ export default function App() {
     setSniffResult(null);
 
     setHasError(false);
+    setTimedOut(false);
     setIsAnalyzing(false);
     setIsSampleScene(false);
 
@@ -310,7 +351,7 @@ export default function App() {
 
             <section
               ref={uploadSectionRef}
-              className="scroll-mt-[74px] mx-auto max-w-4xl px-4 pb-20 sm:px-6"
+              className={`${SCROLL_CLEARANCE} ${SHELL} pb-20`}
               aria-labelledby="upload-scene-heading"
             >
               <div className="mb-6 border-t border-[#D8D1C5] pt-8">
@@ -338,8 +379,7 @@ export default function App() {
         {isAnalyzing && (
           <section
             ref={analysisContainerRef}
-            className="scroll-mt-[74px] mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12"
-            aria-live="polite"
+            className={`${SCROLL_CLEARANCE} ${SHELL} py-8 sm:py-12`}
             aria-busy="true"
           >
             <LoadingState imageUrl={currentImage} />
@@ -353,7 +393,7 @@ export default function App() {
         {sniffResult && currentImage && !isAnalyzing && !hasError && (
           <section
             ref={analysisContainerRef}
-            className="scroll-mt-[74px] mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 sm:py-12"
+            className={`${SCROLL_CLEARANCE} ${SHELL} space-y-8 py-8 sm:py-12`}
             aria-labelledby="field-report-title"
           >
             {/* Report index */}
@@ -364,7 +404,7 @@ export default function App() {
                 </span>
 
                 {isSampleScene && (
-                  <span className="border border-[#D5CEBF] bg-[#FCFAF5]/70 px-2 py-0.5 font-data text-[8px] uppercase tracking-[0.14em] text-[#716C63]">
+                  <span className="border border-[#D8D1C5] bg-[#FCFAF5]/70 px-2 py-0.5 font-data text-[8px] uppercase tracking-[0.14em] text-[#716C63]">
                     PRE-ANALYZED SAMPLE
                   </span>
                 )}
@@ -386,7 +426,7 @@ export default function App() {
             </div>
 
             {/* Image + discovery */}
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-10">
               <div className="lg:col-span-7">
                 <ImageViewport
                   imageUrl={currentImage}
@@ -408,41 +448,38 @@ export default function App() {
             </div>
 
             {/* Quest */}
-            <div className="pt-1">
-              <SniffQuestCard quest={sniffResult.quest} />
-            </div>
+            <SniffQuestCard quest={sniffResult.quest} />
 
             {/* Report actions */}
             <div className="flex flex-col justify-between gap-4 border-t border-[#D8D1C5] pt-5 sm:flex-row sm:items-center">
-              <button
-                type="button"
+              <Button
+                variant="quiet"
                 onClick={() => {
                   sensoryAudio.playClick();
                   handleNewScene();
                 }}
-                className="group inline-flex w-fit items-center gap-3 py-1 font-data text-[9px] font-medium uppercase tracking-[0.16em] text-[#4E4A43] transition-colors duration-200 hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
+                className="w-fit"
               >
                 <ArrowLeft
                   aria-hidden="true"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1"
+                  className="h-3.5 w-3.5 transition-transform duration-base group-hover:-translate-x-1"
                 />
 
                 <span>New scene</span>
-              </button>
+              </Button>
 
-              <button
-                type="button"
+              <Button
+                variant="quiet"
                 onClick={() => {
                   window.scrollTo({
                     top: 0,
                     behavior: "smooth",
                   });
                 }}
-                className="group relative w-fit py-1 font-data text-[8px] uppercase tracking-[0.16em] text-[#716C63] transition-colors duration-200 hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
+                className="w-fit"
               >
                 Back to top
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-[#43513B] transition-all duration-300 group-hover:w-full" />
-              </button>
+              </Button>
             </div>
           </section>
         )}
@@ -454,7 +491,7 @@ export default function App() {
         {hasError && !isAnalyzing && (
           <section
             ref={analysisContainerRef}
-            className="scroll-mt-[74px] mx-auto max-w-2xl px-4 py-16 sm:py-24"
+            className={`${SCROLL_CLEARANCE} ${SHELL} py-16 sm:py-24`}
             aria-labelledby="analysis-error-title"
             aria-live="polite"
           >
@@ -468,44 +505,47 @@ export default function App() {
                 </div>
               </div>
 
-              <h2
+              <h1
                 id="analysis-error-title"
                 className="font-editorial text-2xl uppercase tracking-[-0.02em] text-[#1D1C19] sm:text-3xl"
               >
                 OBSERVATION INTERRUPTED
-              </h2>
+              </h1>
 
               <p className="mt-4 font-sans text-sm leading-relaxed text-[#625D55] sm:text-base">
-                SNIFF couldn&apos;t analyze this scene right now.
-                <br />
-                The analysis service is temporarily unavailable.
+                {timedOut ? (
+                  <>
+                    The analysis ran longer than 45 seconds and was stopped.
+                    <br />A smaller or simpler photograph usually goes through.
+                  </>
+                ) : (
+                  <>
+                    SNIFF couldn&apos;t analyze this scene right now.
+                    <br />
+                    The analysis service is temporarily unavailable.
+                  </>
+                )}
               </p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <button
-                  type="button"
-                  onClick={handleRetry}
-                  className="group inline-flex items-center gap-3 bg-[#1D1C19] px-6 py-3 font-data text-[9px] font-semibold uppercase tracking-[0.16em] text-[#FCFAF5] transition-colors hover:bg-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B] focus-visible:ring-offset-3"
-                >
+                <Button onClick={handleRetry}>
                   <RefreshCw
                     aria-hidden="true"
-                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-45"
+                    className="h-3.5 w-3.5 transition-transform duration-base group-hover:rotate-45"
                   />
 
                   <span>Try again</span>
-                </button>
+                </Button>
 
-                <button
-                  type="button"
+                <Button
+                  variant="quiet"
                   onClick={() => {
                     sensoryAudio.playClick();
                     handleNewScene();
                   }}
-                  className="group relative py-3 font-data text-[9px] font-medium uppercase tracking-[0.16em] text-[#4E4A43] transition-colors hover:text-[#43513B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#43513B]"
                 >
                   New scene
-                  <span className="absolute bottom-2 left-0 h-px w-full origin-left bg-[#AAA296] transition-transform duration-300 group-hover:scale-x-0" />
-                </button>
+                </Button>
               </div>
             </div>
           </section>
@@ -527,19 +567,26 @@ export default function App() {
       ======================================================= */}
 
       <footer className="mt-auto border-t border-[#D8D1C5] bg-[#F6F3EC]">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-6 px-5 py-8 sm:px-7 md:grid-cols-[1fr_auto] md:items-end lg:px-10">
+        <div
+          className={`${SHELL} grid grid-cols-1 gap-6 py-8 md:grid-cols-[1fr_auto] md:items-end`}
+        >
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="font-editorial text-xl font-medium tracking-[-0.025em] text-[#1D1C19]">
                 SNIFF
               </span>
 
-              <span className="font-data text-[7px] tracking-[0.13em] text-[#918B81]">
+              {/*
+               * The product's thesis, not a disclaimer.
+               * At 7px it sat at the same weight as the
+               * legal line below and read as decoration.
+               */}
+              <span className="font-data text-[10px] tracking-[0.1em] text-muted">
                 The world is different down here.
               </span>
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[7px] uppercase tracking-[0.15em] text-[#8C867C]">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-data text-[7px] uppercase tracking-[0.15em] text-faint">
               <span>Visible evidence only</span>
 
               <span aria-hidden="true" className="text-[#C1BAAE]">
@@ -556,7 +603,7 @@ export default function App() {
             </div>
           </div>
 
-          <span className="font-data text-[7px] uppercase tracking-[0.16em] text-[#918B81]">
+          <span className="font-data text-[7px] uppercase tracking-[0.16em] text-faint">
             Built with Gemini
           </span>
         </div>
